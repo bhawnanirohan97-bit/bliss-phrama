@@ -1,17 +1,28 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getCategoryBySlug } from "@/lib/data";
+import { getCategoryBySlug, getCompany } from "@/lib/data";
 import type { Product } from "@/lib/types";
+import { WhatsAppIcon } from "@/components/icons";
+
+function whatsappUrl(product: Product): string {
+  const company = getCompany();
+  const message = `Hello ${company.name}, I am interested in ${product.name} (${product.strength}). Please share availability and a quotation.`;
+  return `https://wa.me/${company.whatsappHref}?text=${encodeURIComponent(
+    message
+  )}`;
+}
 
 export default function ProductCard({ product }: { product: Product }) {
   const category = getCategoryBySlug(product.categorySlug);
 
   return (
     <article className="flex flex-col overflow-hidden rounded-lg border border-slate-200 bg-white transition-all hover:border-brand-300 hover:shadow-md">
-      <Link
-        href={`/products/${product.slug}`}
+      <a
+        href={whatsappUrl(product)}
+        target="_blank"
+        rel="noopener noreferrer"
         className="group block"
-        aria-label={`View ${product.name}`}
+        aria-label={`Enquire about ${product.name} on WhatsApp`}
       >
         <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-50">
           <Image
@@ -31,6 +42,10 @@ export default function ProductCard({ product }: { product: Product }) {
           </h3>
           <dl className="mt-3 space-y-1.5 text-sm text-slate-600">
             <div className="flex justify-between gap-3">
+              <dt className="text-slate-500">Price</dt>
+              <dd className="font-medium text-slate-700">{product.price}</dd>
+            </div>
+            <div className="flex justify-between gap-3">
               <dt className="text-slate-500">Strength</dt>
               <dd className="font-medium text-slate-700">{product.strength}</dd>
             </div>
@@ -45,14 +60,18 @@ export default function ProductCard({ product }: { product: Product }) {
               <dd className="font-medium text-slate-700">{product.moq}</dd>
             </div>
           </dl>
+          <span className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-md bg-green-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors group-hover:bg-green-700">
+            <WhatsAppIcon className="h-4 w-4" />
+            Enquire on WhatsApp
+          </span>
         </div>
-      </Link>
-      <div className="border-t border-slate-100 p-5 pt-4">
+      </a>
+      <div className="border-t border-slate-100 p-5 pt-4 text-center">
         <Link
-          href={`/request-quote?product=${encodeURIComponent(product.slug)}`}
-          className="inline-flex w-full items-center justify-center rounded-md border border-brand-700 px-4 py-2.5 text-sm font-semibold text-brand-700 transition-colors hover:bg-brand-50"
+          href={`/products/${product.slug}`}
+          className="text-sm font-semibold text-brand-700 transition-colors hover:text-brand-800"
         >
-          Request Quote
+          View full details
         </Link>
       </div>
     </article>

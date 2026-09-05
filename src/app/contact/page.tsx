@@ -14,7 +14,7 @@ import {
 export const metadata: Metadata = {
   title: "Contact Us",
   description:
-    "Contact Bliss Lifesciences for pharmaceutical sourcing, quotations and export inquiries. Reach us by phone, email, WhatsApp or the contact form.",
+    "Contact Bliss Pharmex for pharmaceutical sourcing, quotations and export inquiries. Reach us by phone, email, WhatsApp or the contact form.",
   alternates: { canonical: "/contact" },
 };
 

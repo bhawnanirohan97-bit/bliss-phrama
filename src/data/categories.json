@@ -1,50 +1,566 @@
 [
   {
-    "slug": "antibiotics",
-    "name": "Antibiotics",
-    "description": "Broad-spectrum oral antibiotics for community infections, formulated to global pharmacopoeia standards.",
-    "image": "/images/categories/antibiotics.svg"
+    "slug": "anti-cancer-tablets",
+    "name": "Anti Cancer Tablets",
+    "description": "Quality anti cancer tablets formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/8/539783839/BV/UD/IS/249901953/image-0901-1-500x500.jpg"
   },
   {
-    "slug": "analgesics-and-pain-management",
-    "name": "Analgesics & Pain Management",
-    "description": "Pain relief formulations spanning antipyretics, NSAIDs and combination therapy.",
-    "image": "/images/categories/analgesics.svg"
+    "slug": "steroid-injections",
+    "name": "Steroid Injections",
+    "description": "Quality steroid injections formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/10/551218026/ME/GC/FQ/249901953/deca-250-injection-10ml-vial-500x500.jpg"
   },
   {
-    "slug": "antidiabetics",
-    "name": "Antidiabetics",
-    "description": "Oral antidiabetic therapies for type-2 diabetes management in monotherapy and combinations.",
-    "image": "/images/categories/antidiabetics.svg"
+    "slug": "tadalafil-tablets",
+    "name": "Tadalafil Tablets",
+    "description": "Quality tadalafil tablets formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/9/542136214/WA/GX/VE/249901953/untitled-500x500.jpg"
   },
   {
-    "slug": "cardiovascular",
-    "name": "Cardiovascular",
-    "description": "Antihypertensives, statins and cardiac support medications for chronic care programs.",
-    "image": "/images/categories/cardiovascular.svg"
+    "slug": "sildenafil-tablets",
+    "name": "Sildenafil Tablets",
+    "description": "Quality sildenafil tablets formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/9/542247654/XK/HW/ZK/249901953/untitled-1-500x500.jpg"
   },
   {
-    "slug": "gastrointestinal",
-    "name": "Gastrointestinal",
-    "description": "Acid-reducing and gastroprotective therapies for acid peptic disorders.",
-    "image": "/images/categories/gastrointestinal.svg"
+    "slug": "steroids-tablets",
+    "name": "Steroids Tablets",
+    "description": "Quality steroids tablets formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/9/541959989/CQ/XK/DC/249901953/untitled-1-2-500x500.jpg"
   },
   {
-    "slug": "respiratory",
-    "name": "Respiratory",
-    "description": "Antitussive, antihistamine and mucolytic formulations for respiratory care.",
-    "image": "/images/categories/respiratory.svg"
+    "slug": "anti-cancer-injection",
+    "name": "Anti Cancer Injection",
+    "description": "Quality anti cancer injection formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/11/561235507/QF/KU/WE/249901953/testomix-250mg-ml-injection-500x500.jpg"
   },
   {
-    "slug": "vitamins-and-supplements",
-    "name": "Vitamins & Supplements",
-    "description": "Nutritional supplements and vitamin therapies for daily wellness and deficiency correction.",
-    "image": "/images/categories/vitamins.svg"
+    "slug": "steroid-tablets-and-injections",
+    "name": "Steroid Tablets And Injections",
+    "description": "Quality steroid tablets and injections formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/10/552064886/DI/EL/ZG/249901953/boldee-boldenone-undecylate-injections-500x500.jpg"
   },
   {
-    "slug": "dermatological",
-    "name": "Dermatological",
-    "description": "Topical creams and ointments for fungal and bacterial skin conditions.",
-    "image": "/images/categories/dermatological.svg"
+    "slug": "anti-cancer-capsule",
+    "name": "Anti Cancer Capsule",
+    "description": "Quality anti cancer capsule formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/8/539838854/TU/UC/BL/249901953/veenat-anti-cancer-capsules-500x500.jpg"
+  },
+  {
+    "slug": "amoxicillin-capsule",
+    "name": "Amoxicillin Capsule",
+    "description": "Quality amoxicillin capsule formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/8/540111917/NY/XB/NP/249901953/almox-amoxicillin-capsule-500x500.jpg"
+  },
+  {
+    "slug": "anti-acne-cream",
+    "name": "Anti Acne Cream",
+    "description": "Quality anti acne cream formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/12/569475082/VB/XH/TX/249901953/anti-acne-cream-500x500.jpg"
+  },
+  {
+    "slug": "anti-alcohol-medicine",
+    "name": "Anti Alcohol Medicine",
+    "description": "Quality anti alcohol medicine formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/9/542261459/ZX/AN/DH/249901953/naltima-pharmaceutical-tablets-500x500.jpeg"
+  },
+  {
+    "slug": "anti-allergic-medicines",
+    "name": "Anti Allergic Medicines",
+    "description": "Quality anti allergic medicines formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/9/548163283/NO/SE/IV/249901953/6mg-ivejuv-ivermectin-tablets-500x500.jpg"
+  },
+  {
+    "slug": "anti-anemia-medicine",
+    "name": "Anti Anemia Medicine",
+    "description": "Quality anti anemia medicine formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/9/541592990/YE/SU/XS/249901953/untitled-1-500x500.jpg"
+  },
+  {
+    "slug": "anti-anxiety-anti-depressants-medicines",
+    "name": "Anti Anxiety & Anti Depressants Medicines",
+    "description": "Quality anti anxiety & anti depressants medicines formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/11/558084971/VJ/ON/YY/249901953/remoqueen-mirtazapine-30mg-tablets-500x500.jpg"
+  },
+  {
+    "slug": "anti-anxiety-medicines",
+    "name": "Anti Anxiety Medicines",
+    "description": "Quality anti anxiety medicines formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/8/539784029/PY/UC/FY/249901953/image-0901-4-500x500.jpg"
+  },
+  {
+    "slug": "anti-bacterial-infections-medicines",
+    "name": "Anti Bacterial Infections Medicines",
+    "description": "Quality anti bacterial infections medicines formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/11/557196844/EC/CI/GW/249901953/doxylife-2-500x500.jpg"
+  },
+  {
+    "slug": "anti-cancer-tablets-and-capsules",
+    "name": "Anti Cancer Tablets And Capsules",
+    "description": "Quality anti cancer tablets and capsules formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/11/559307576/SR/FX/IA/249901953/olabuzz-olaparib-150mg-tablet-500x500.jpg"
+  },
+  {
+    "slug": "anti-fungal-medicine",
+    "name": "Anti Fungal Medicine",
+    "description": "Quality anti fungal medicine formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/11/557265750/GW/LJ/LT/249901953/konaqueen-fluconazole-100mg-tablet-500x500.jpg"
+  },
+  {
+    "slug": "anti-hepatitis-medicines",
+    "name": "Anti Hepatitis Medicines",
+    "description": "Quality anti hepatitis medicines formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/11/563388613/XN/EM/OI/249901953/resof-sofosbuvir-tablet-500x500.jpg"
+  },
+  {
+    "slug": "anti-hiv-medicine",
+    "name": "Anti Hiv Medicine",
+    "description": "Quality anti hiv medicine formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/11/562111342/US/UL/WM/249901953/emtricitabine-tenofovir-alafenamide-tablets-500x500.jpg"
+  },
+  {
+    "slug": "anti-hiv-tablets",
+    "name": "Anti HIV Tablets",
+    "description": "Quality anti hiv tablets formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/8/539833839/CM/RC/AO/249901953/hepbest-tenofovir-alafenamide-tablets-500x500.jpg"
+  },
+  {
+    "slug": "anti-inflammatory-drugs",
+    "name": "Anti Inflammatory Drugs",
+    "description": "Quality anti inflammatory drugs formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/8/540197396/NI/GW/CP/249901953/untitled-41-500x500.jpg"
+  },
+  {
+    "slug": "anti-malarial-medicine",
+    "name": "Anti Malarial Medicine",
+    "description": "Quality anti malarial medicine formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/12/566428426/JW/OD/MD/249901953/norsunate-artesunate-tablets-500x500.jpg"
+  },
+  {
+    "slug": "anti-migraine-medicines",
+    "name": "Anti Migraine Medicines",
+    "description": "Quality anti migraine medicines formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/9/541608224/KB/MY/HN/249901953/image-0901-33-500x500.jpg"
+  },
+  {
+    "slug": "anti-parasitic-medicines",
+    "name": "Anti Parasitic Medicines",
+    "description": "Quality anti parasitic medicines formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/11/556713057/IC/HC/DK/249901953/mebendazole-100-mg-tablet-500x500.jpg"
+  },
+  {
+    "slug": "anti-thyroid-medicines",
+    "name": "Anti Thyroid Medicines",
+    "description": "Quality anti thyroid medicines formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2026/1/574959675/OE/MC/BS/249901953/levothyroxine-sodium-tablet-500x500.jpg"
+  },
+  {
+    "slug": "anti-viral-medicines",
+    "name": "Anti Viral Medicines",
+    "description": "Quality anti viral medicines formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/12/567052244/IU/ZK/EB/249901953/acivir-acyclovir-tablets-500x500.jpg"
+  },
+  {
+    "slug": "antibiotic-medicine",
+    "name": "Antibiotic Medicine",
+    "description": "Quality antibiotic medicine formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/8/540109621/HG/KO/AU/249901953/image-0901-2025-08-28t114723-886-500x500.jpg"
+  },
+  {
+    "slug": "antibiotic-medicines",
+    "name": "Antibiotic Medicines",
+    "description": "Quality antibiotic medicines formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/9/541938369/ZZ/UK/LU/249901953/image-0901-38-500x500.jpg"
+  },
+  {
+    "slug": "antibiotic-tablet-and-capsules",
+    "name": "Antibiotic Tablet And Capsules",
+    "description": "Quality antibiotic tablet and capsules formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/12/567043277/FO/ZW/JN/249901953/dalaheal-300-mg-capsules-500x500.jpg"
+  },
+  {
+    "slug": "antihistamines",
+    "name": "Antihistamines",
+    "description": "Quality antihistamines formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/8/540441771/ER/PR/CN/249901953/levocetirizine-levorid-tablets-2-500x500.jpg"
+  },
+  {
+    "slug": "antimalarial-drugs",
+    "name": "Antimalarial Drugs",
+    "description": "Quality antimalarial drugs formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/12/566708439/LJ/ON/LI/249901953/ridsunate-artesunate-tablets-500x500.jpg"
+  },
+  {
+    "slug": "arthritic-drugs",
+    "name": "Arthritic Drugs",
+    "description": "Quality arthritic drugs formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/9/542287949/CH/ME/FO/249901953/10mg-arava-leflunomide-tablet-500x500.jpeg"
+  },
+  {
+    "slug": "asthma-inhaler",
+    "name": "Asthma Inhaler",
+    "description": "Quality asthma inhaler formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/9/541926011/KJ/SJ/SB/249901953/tiova-tiotropium-inhaler-1-500x500.jpg"
+  },
+  {
+    "slug": "asthma-medicine",
+    "name": "Asthma Medicine",
+    "description": "Quality asthma medicine formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/8/540435400/YD/MB/LF/249901953/triohale-rotacaps-capsules-1-500x500.jpg"
+  },
+  {
+    "slug": "birth-control-pills",
+    "name": "Birth Control Pills",
+    "description": "Quality birth control pills formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/8/540408062/OF/RT/SQ/249901953/image-0901-2025-08-29t100354-075-500x500.jpg"
+  },
+  {
+    "slug": "cardiac-medicine",
+    "name": "Cardiac Medicine",
+    "description": "Quality cardiac medicine formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/9/541608528/JE/OB/JV/249901953/naratrex-naratriptan-tablets-2-500x500.jpg"
+  },
+  {
+    "slug": "diabetes-medicine",
+    "name": "Diabetes Medicine",
+    "description": "Quality diabetes medicine formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/9/541611265/VS/EJ/UV/249901953/rybelsus-semaglutide-tablets-500x500.jpg"
+  },
+  {
+    "slug": "diabities-insulin-pens",
+    "name": "Diabities Insulin Pens",
+    "description": "Quality diabities insulin pens formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/11/560198108/IN/FT/QX/249901953/mounjaro-kwikpen-7-5mg-500x500.jpg"
+  },
+  {
+    "slug": "dietary-supplement",
+    "name": "Dietary Supplement",
+    "description": "Quality dietary supplement formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/11/558066413/RG/WH/UT/249901953/mushroom-complex-5500-capsules-500x500.jpg"
+  },
+  {
+    "slug": "drop-shipping-services",
+    "name": "Drop Shipping Services",
+    "description": "Quality drop shipping services formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/9/542261623/KH/DD/JS/249901953/medicine-drop-shipping-services-2-500x500.jpg"
+  },
+  {
+    "slug": "edaravone-injection",
+    "name": "Edaravone Injection",
+    "description": "Quality edaravone injection formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/8/540573108/PF/OK/GD/249901953/eravone-edaravone-injection-2-500x500.jpg"
+  },
+  {
+    "slug": "erectile-dysfunction-medicine",
+    "name": "Erectile Dysfunction Medicine",
+    "description": "Quality erectile dysfunction medicine formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/10/553817429/NQ/DR/QL/249901953/super-tadash-tadalafil-tablets-500x500.jpg"
+  },
+  {
+    "slug": "erectile-dysfunction-products",
+    "name": "Erectile Dysfunction Products",
+    "description": "Quality erectile dysfunction products formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/11/563346375/RV/MT/ES/249901953/viagra-tablet-100-mg-500x500.jpg"
+  },
+  {
+    "slug": "eye-drops",
+    "name": "Eye Drops",
+    "description": "Quality eye drops formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/8/540169084/HR/SU/YU/249901953/eyemist-eye-drops-1-500x500.jpeg"
+  },
+  {
+    "slug": "febuxostat-tablets",
+    "name": "Febuxostat Tablets",
+    "description": "Quality febuxostat tablets formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/8/540092454/QF/ME/YV/249901953/image-0901-2025-08-28t110812-956-500x500.jpg"
+  },
+  {
+    "slug": "female-healthcare-products",
+    "name": "Female Healthcare Products",
+    "description": "Quality female healthcare products formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/11/561423611/CD/HN/OF/249901953/estofert-tg-gel-500x500.jpg"
+  },
+  {
+    "slug": "fertility-enhancer",
+    "name": "Fertility Enhancer",
+    "description": "Quality fertility enhancer formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2026/1/579001907/IG/UU/EB/249901953/enclomiphene-tablet-500x500.jpg"
+  },
+  {
+    "slug": "fertility-enhancer-drugs",
+    "name": "Fertility Enhancer Drugs",
+    "description": "Quality fertility enhancer drugs formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/8/540078417/WK/PU/KR/249901953/image-0901-2025-08-28t102844-422-500x500.jpg"
+  },
+  {
+    "slug": "furosemide-tablet",
+    "name": "Furosemide Tablet",
+    "description": "Quality furosemide tablet formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/12/572111905/QX/JZ/YW/249901953/furosemide-tablet-500x500.jpg"
+  },
+  {
+    "slug": "hair-care-medicine",
+    "name": "Hair Care Medicine",
+    "description": "Quality hair care medicine formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/12/569486823/RG/RV/TS/249901953/hair-loss-medicines-500x500.jpg"
+  },
+  {
+    "slug": "hair-growth-medicine",
+    "name": "Hair Growth Medicine",
+    "description": "Quality hair growth medicine formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/9/542255578/KN/WW/GC/249901953/minoxytop-minoxidil-tablets-500x500.jpg"
+  },
+  {
+    "slug": "hair-loss-medicine",
+    "name": "Hair Loss Medicine",
+    "description": "Quality hair loss medicine formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/11/556728534/YD/NU/IQ/249901953/balpecia-1mg-finasteride-tablet-500x500.jpg"
+  },
+  {
+    "slug": "hepatitis-medicine",
+    "name": "Hepatitis Medicine",
+    "description": "Quality hepatitis medicine formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/11/563390399/MY/IK/MG/249901953/sofovir-sofosbuvir-tablets-500x500.jpg"
+  },
+  {
+    "slug": "human-albumin-injection",
+    "name": "Human Albumin Injection",
+    "description": "Quality human albumin injection formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/8/540110960/HF/IW/DA/249901953/alburel-t-injection-2-500x500.jpg"
+  },
+  {
+    "slug": "hypertension-medicine",
+    "name": "Hypertension Medicine",
+    "description": "Quality hypertension medicine formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/11/557299599/GA/KA/ZH/249901953/minoxiboon-2-5mg-tablet-500x500.jpg"
+  },
+  {
+    "slug": "immunosuppressive-drugs",
+    "name": "Immunosuppressive Drugs",
+    "description": "Quality immunosuppressive drugs formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/9/541619728/VA/ZD/BS/249901953/image-0901-53-500x500.jpg"
+  },
+  {
+    "slug": "isotretinoin-capsules",
+    "name": "Isotretinoin Capsules",
+    "description": "Quality isotretinoin capsules formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/9/541632012/UX/QN/RA/249901953/sotret-pharmaceutical-tablets-500x500.jpeg"
+  },
+  {
+    "slug": "ivermectin-tablets",
+    "name": "Ivermectin Tablets",
+    "description": "Quality ivermectin tablets formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/9/541614633/US/EM/GK/249901953/image-0901-44-500x500.jpg"
+  },
+  {
+    "slug": "kidney-medicine",
+    "name": "Kidney Medicine",
+    "description": "Quality kidney medicine formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/9/542255849/CW/JW/UL/249901953/renoalfa-alpha-ketoanalogue-tablets-1-500x500.jpg"
+  },
+  {
+    "slug": "medicine-drop-shipper",
+    "name": "Medicine Drop Shipper",
+    "description": "Quality medicine drop shipper formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/12/568527111/MB/LC/NX/249901953/medicine-drop-service-500x500.jpg"
+  },
+  {
+    "slug": "medicine-drop-shippers",
+    "name": "Medicine Drop Shippers",
+    "description": "Quality medicine drop shippers formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/9/542255987/FZ/UW/LL/249901953/generic-medicines-drop-shipping-2-500x500.jpg"
+  },
+  {
+    "slug": "minoxidil-topical-solution",
+    "name": "Minoxidil Topical Solution",
+    "description": "Quality minoxidil topical solution formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/8/539894264/AM/IQ/SO/249901953/morr-f-5-solution-500x500.jpeg"
+  },
+  {
+    "slug": "modafinil-tablets",
+    "name": "Modafinil Tablets",
+    "description": "Quality modafinil tablets formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2026/1/577871481/EA/TS/FU/249901953/modaheal-200mg-tablet-500x500.jpg"
+  },
+  {
+    "slug": "nimesulide-tablet",
+    "name": "Nimesulide Tablet",
+    "description": "Quality nimesulide tablet formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/9/541960538/TB/DL/IS/249901953/image-0901-7-500x500.jpg"
+  },
+  {
+    "slug": "nutritional-supplements",
+    "name": "Nutritional Supplements",
+    "description": "Quality nutritional supplements formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/8/539877313/JA/DY/CJ/249901953/image-0901-77-500x500.jpg"
+  },
+  {
+    "slug": "orlistat-capsule",
+    "name": "Orlistat Capsule",
+    "description": "Quality orlistat capsule formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/12/566141350/IF/OU/SM/249901953/slimming-medicine-500x500.jpg"
+  },
+  {
+    "slug": "osteoporosis-medications",
+    "name": "Osteoporosis Medications",
+    "description": "Quality osteoporosis medications formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/10/553423294/BF/QF/XG/249901953/zolejas-zoledronic-injection-500x500.jpg"
+  },
+  {
+    "slug": "pain-killer-medicine",
+    "name": "Pain Killer Medicine",
+    "description": "Quality pain killer medicine formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/12/566650593/RI/MG/NK/249901953/ibuprofen-tablets-600-mg-500x500.jpg"
+  },
+  {
+    "slug": "pain-relief-tablet",
+    "name": "Pain Relief Tablet",
+    "description": "Quality pain relief tablet formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/12/566668665/XD/GT/PH/249901953/tolperisone-hcl-150-mg-tablet-500x500.jpg"
+  },
+  {
+    "slug": "pharmaceutical-cream",
+    "name": "Pharmaceutical Cream",
+    "description": "Quality pharmaceutical cream formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/8/539876857/DV/HF/HH/249901953/eukroma-skin-lightener-500x500.jpg"
+  },
+  {
+    "slug": "pharmaceutical-injection-and-solution",
+    "name": "Pharmaceutical Injection And Solution",
+    "description": "Quality pharmaceutical injection and solution formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/12/569472201/QG/ZD/DG/249901953/glutathione-injection-500x500.jpg"
+  },
+  {
+    "slug": "pharmaceutical-tablet-capsules",
+    "name": "Pharmaceutical Tablet & Capsules",
+    "description": "Quality pharmaceutical tablet & capsules formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/12/570164164/TD/LO/MH/249901953/fluoxetine-capsule-500x500.jpg"
+  },
+  {
+    "slug": "pharmaceutical-tablets",
+    "name": "Pharmaceutical Tablets",
+    "description": "Quality pharmaceutical tablets formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/11/558080877/HU/NI/KZ/249901953/novodart-0-5-mg-tablet-500x500.jpg"
+  },
+  {
+    "slug": "pharmaceuticals-injection",
+    "name": "Pharmaceuticals Injection",
+    "description": "Quality pharmaceuticals injection formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/11/561224459/PH/TZ/PK/249901953/nervigesic-pregabalin-capsules-300mg-500x500.jpg"
+  },
+  {
+    "slug": "pharmacy-management-services",
+    "name": "Pharmacy Management Services",
+    "description": "Quality pharmacy management services formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/9/542339553/TD/VA/SB/249901953/pharmacy-medicine-services-500x500.jpg"
+  },
+  {
+    "slug": "pregabalin-capsules",
+    "name": "Pregabalin Capsules",
+    "description": "Quality pregabalin capsules formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/11/561456094/ZA/NP/IR/249901953/nervigesic-pregabalin-capsules-300mg-500x500.jpg"
+  },
+  {
+    "slug": "rheumatoid-arthritis-medicine",
+    "name": "Rheumatoid Arthritis Medicine",
+    "description": "Quality rheumatoid arthritis medicine formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/11/558114691/MF/GO/TP/249901953/tofakay-tofacitinib-tablet-5mg-500x500.jpg"
+  },
+  {
+    "slug": "sexual-oral-jelly",
+    "name": "Sexual Oral Jelly",
+    "description": "Quality sexual oral jelly formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/8/539786980/BD/GL/ZN/249901953/image-0901-22-500x500.jpg"
+  },
+  {
+    "slug": "skin-creams",
+    "name": "Skin Creams",
+    "description": "Quality skin creams formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/9/541620918/UK/TF/BB/249901953/brite-cream-500x500.jpeg"
+  },
+  {
+    "slug": "somatropin-injection",
+    "name": "Somatropin Injection",
+    "description": "Quality somatropin injection formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/8/540091441/VP/XT/UX/249901953/untitled-28-500x500.jpg"
+  },
+  {
+    "slug": "testosterone-capsules",
+    "name": "Testosterone Capsules",
+    "description": "Quality testosterone capsules formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/8/540436055/PM/HU/RB/249901953/untitled-1-61-500x500.jpg"
+  },
+  {
+    "slug": "testosterone-gel",
+    "name": "Testosterone Gel",
+    "description": "Quality testosterone gel formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/8/539800057/NQ/DW/UX/249901953/untitled-1-14-500x500.jpg"
+  },
+  {
+    "slug": "testosterone-injection",
+    "name": "Testosterone Injection",
+    "description": "Quality testosterone injection formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/8/539802915/IF/OD/GA/249901953/untitled-1-15-500x500.jpg"
+  },
+  {
+    "slug": "thyroid-medicine",
+    "name": "Thyroid Medicine",
+    "description": "Quality thyroid medicine formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/12/569777978/PU/VW/WO/249901953/thyroxine-sodium-tablets-500x500.jpeg"
+  },
+  {
+    "slug": "tretinoin-cream",
+    "name": "Tretinoin Cream",
+    "description": "Quality tretinoin cream formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/9/541625365/HO/LK/EN/249901953/image-0901-57-500x500.jpeg"
+  },
+  {
+    "slug": "vardenafil-tablets",
+    "name": "Vardenafil Tablets",
+    "description": "Quality vardenafil tablets formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/8/540455909/DG/BH/SN/249901953/image-0901-2025-08-29t120259-852-500x500.jpg"
+  },
+  {
+    "slug": "verdenafil-tablets",
+    "name": "Verdenafil Tablets",
+    "description": "Quality verdenafil tablets formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/12/567945598/LL/EM/AJ/249901953/super-vilitra-tablets-500x500.jpg"
+  },
+  {
+    "slug": "veterinary-medicine",
+    "name": "Veterinary Medicine",
+    "description": "Quality veterinary medicine formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/10/553408814/VF/KJ/IS/249901953/wormentel-1000mg-tablets-500x500.jpg"
+  },
+  {
+    "slug": "veterinary-product",
+    "name": "Veterinary Product",
+    "description": "Quality veterinary product formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/12/568256676/NG/OC/OM/249901953/neomec-ivermectin10mg-tablets-500x500.jpg"
+  },
+  {
+    "slug": "veterinary-tablets",
+    "name": "Veterinary Tablets",
+    "description": "Quality veterinary tablets formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/12/568539711/RE/GL/DO/249901953/online-pharma-service-500x500.jpg"
+  },
+  {
+    "slug": "weight-loss-drugs",
+    "name": "Weight Loss Drugs",
+    "description": "Quality weight loss drugs formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/12/566147913/OB/ED/HX/249901953/weight-loss-pill-500x500.jpg"
+  },
+  {
+    "slug": "weight-loss-medicine",
+    "name": "Weight Loss Medicine",
+    "description": "Quality weight loss medicine formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/12/566136064/AQ/EC/PM/249901953/orlistat-capsules-500x500.jpg"
+  },
+  {
+    "slug": "zopiclone-tablets",
+    "name": "Zopiclone Tablets",
+    "description": "Quality zopiclone tablets formulations supplied by Bliss Pharmex for distributors, wholesalers, importers and institutional buyers across export markets.",
+    "image": "https://5.imimg.com/data5/SELLER/Default/2025/11/558106330/EC/LO/WJ/249901953/sleepirest-10mg-tablets-500x500.jpg"
   }
 ]

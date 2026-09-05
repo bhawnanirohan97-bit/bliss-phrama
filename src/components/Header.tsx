@@ -21,7 +21,7 @@ export default function Header() {
           </span>
           <span className="flex flex-col leading-tight">
             <span className="text-base font-semibold tracking-tight text-slate-900">
-              Bliss Lifesciences
+              Bliss Pharmex
             </span>
             <span className="text-[11px] font-medium uppercase tracking-widest text-brand-700">
               Pharma Exporter

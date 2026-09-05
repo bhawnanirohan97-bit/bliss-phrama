@@ -56,7 +56,7 @@ export default function Hero() {
         <div className="relative hidden aspect-[4/3] overflow-hidden rounded-lg shadow-lg ring-1 ring-slate-200 lg:block">
           <Image
             src="/images/company/facility.svg"
-            alt="Bliss Lifesciences manufacturing facility"
+            alt="Bliss Pharmex manufacturing facility"
             fill
             sizes="(min-width: 1024px) 50vw, 100vw"
             priority

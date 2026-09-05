@@ -12,7 +12,7 @@ import { DocumentIcon, GlobeIcon, ShieldIcon } from "@/components/icons";
 export const metadata: Metadata = {
   title: "B2B Pharmaceutical Exporter from India",
   description:
-    "Bliss Lifesciences supplies quality-assured generic medicines to international distributors, wholesalers, importers and institutional buyers. Explore our product catalog and request a quotation.",
+    "Bliss Pharmex supplies quality-assured generic medicines to international distributors, wholesalers, importers and institutional buyers. Explore our product catalog and request a quotation.",
   alternates: { canonical: "/" },
 };
 
@@ -95,7 +95,7 @@ export default function HomePage() {
             description="Discover formulations across therapeutic segments, designed for distributor programs, tenders and private-label supply."
           />
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {categories.map((category) => (
+            {categories.slice(0, 8).map((category) => (
               <CategoryCard key={category.slug} category={category} />
             ))}
           </div>

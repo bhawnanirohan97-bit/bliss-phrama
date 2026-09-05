@@ -27,6 +27,7 @@ export default function ProductDetail({
     { label: "Category", value: category?.name ?? product.categorySlug },
     { label: "Dosage form", value: product.dosageForm },
     { label: "Strength", value: product.strength },
+    { label: "Price", value: product.price },
     { label: "Packaging", value: product.packaging },
     { label: "MOQ", value: product.moq },
   ];
@@ -74,35 +75,37 @@ export default function ProductDetail({
                 ))}
               </dl>
 
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Link
-                  href={`/request-quote?product=${encodeURIComponent(
-                    product.slug
-                  )}`}
-                  className="inline-flex items-center justify-center rounded-md bg-brand-700 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-brand-800"
-                >
-                  Request Quote for This Product
-                </Link>
+              <div className="mt-8 flex flex-col gap-3">
                 <a
                   href={`https://wa.me/${company.whatsappHref}?text=${encodeURIComponent(
-                    `Hello ${company.name}, I would like a quotation for ${product.name} (${product.strength}).`
+                    `Hello ${company.name}, I am interested in ${product.name} (${product.strength}). Please share availability and a quotation.`
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 rounded-md border border-green-600 px-6 py-3.5 text-sm font-semibold text-green-700 transition-colors hover:bg-green-50"
+                  className="inline-flex items-center justify-center gap-2 rounded-md bg-green-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-green-700"
                 >
                   <WhatsAppIcon className="h-4 w-4" />
-                  WhatsApp
+                  Enquire on WhatsApp
                 </a>
-                <a
-                  href={`mailto:${company.email}?subject=${encodeURIComponent(
-                    `RFQ: ${product.name}`
-                  )}`}
-                  className="inline-flex items-center justify-center gap-2 rounded-md border border-slate-300 bg-white px-6 py-3.5 text-sm font-semibold text-slate-700 transition-colors hover:border-brand-300 hover:text-brand-700"
-                >
-                  <MailIcon className="h-4 w-4" />
-                  Email
-                </a>
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <Link
+                    href={`/request-quote?product=${encodeURIComponent(
+                      product.slug
+                    )}`}
+                    className="inline-flex items-center justify-center rounded-md bg-brand-700 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-brand-800"
+                  >
+                    Request a Detailed Quote
+                  </Link>
+                  <a
+                    href={`mailto:${company.email}?subject=${encodeURIComponent(
+                      `RFQ: ${product.name}`
+                    )}`}
+                    className="inline-flex items-center justify-center gap-2 rounded-md border border-slate-300 bg-white px-6 py-3.5 text-sm font-semibold text-slate-700 transition-colors hover:border-brand-300 hover:text-brand-700"
+                  >
+                    <MailIcon className="h-4 w-4" />
+                    Email
+                  </a>
+                </div>
               </div>
             </div>
           </div>

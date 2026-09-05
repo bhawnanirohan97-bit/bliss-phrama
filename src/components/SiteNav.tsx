@@ -78,7 +78,7 @@ export default function SiteNav() {
                   </svg>
                 </span>
                 <span className="text-lg font-semibold tracking-tight text-slate-900">
-                  Bliss Lifesciences
+                  Bliss Pharmex
                 </span>
               </Link>
               <button

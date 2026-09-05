@@ -4,7 +4,7 @@ import LegalDocument from "@/components/LegalDocument";
 export const metadata: Metadata = {
   title: "Disclaimer",
   description:
-    "Disclaimer for the Bliss Lifesciences B2B pharmaceutical sourcing website.",
+    "Disclaimer for the Bliss Pharmex B2B pharmaceutical sourcing website.",
   alternates: { canonical: "/disclaimer" },
 };
 

@@ -14,6 +14,7 @@ export type Product = {
   strength: string;
   packaging: string;
   moq: string;
+  price: string;
   description: string;
   image: string;
   featured: boolean;

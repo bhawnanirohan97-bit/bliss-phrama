@@ -6,7 +6,7 @@ import { getCategories, getProducts } from "@/lib/data";
 export const metadata: Metadata = {
   title: "Products",
   description:
-    "Search and filter pharmaceutical products for export: antibiotics, cardiovascular, antidiabetics, respiratory, gastrointestinal, dermatological and nutritional categories.",
+    "Search and filter pharmaceutical products for export: anti-cancer, steroid, erectile dysfunction, pain management, diabetes and many more therapeutic categories.",
   alternates: { canonical: "/products" },
 };
 

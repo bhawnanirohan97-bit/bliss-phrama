@@ -4,7 +4,7 @@ import LegalDocument from "@/components/LegalDocument";
 export const metadata: Metadata = {
   title: "Terms & Conditions",
   description:
-    "Terms and conditions governing the use of the Bliss Lifesciences B2B pharmaceutical sourcing website.",
+    "Terms and conditions governing the use of the Bliss Pharmex B2B pharmaceutical sourcing website.",
   alternates: { canonical: "/terms-and-conditions" },
 };
 
@@ -29,7 +29,7 @@ export default function TermsConditionsPage() {
         },
         {
           heading: "Intellectual property",
-          body: "All content on this website, including text, graphics, logos and imagery, is the property of Bliss Lifesciences Pvt. Ltd. unless otherwise stated. Any regulatory-sensitive or accreditation claims remain subject to client approval before release.",
+          body: "All content on this website, including text, graphics, logos and imagery, is the property of Bliss Pharmex Pvt. Ltd. unless otherwise stated. Any regulatory-sensitive or accreditation claims remain subject to client approval before release.",
         },
         {
           heading: "Limitation of liability",

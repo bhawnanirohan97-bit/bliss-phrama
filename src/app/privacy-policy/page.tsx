@@ -4,7 +4,7 @@ import LegalDocument from "@/components/LegalDocument";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
-    "How Bliss Lifesciences collects, uses and protects personal information submitted through this website.",
+    "How Bliss Pharmex collects, uses and protects personal information submitted through this website.",
   alternates: { canonical: "/privacy-policy" },
 };
 
@@ -13,7 +13,7 @@ export default function PrivacyPolicyPage() {
     <LegalDocument
       title="Privacy Policy"
       updated="September 2026"
-      lead="This Privacy Policy explains how Bliss Lifesciences Pvt. Ltd. collects, uses and safeguards information provided through this website. This is a B2B website for pharmaceutical sourcing inquiries; it is not an online pharmacy."
+      lead="This Privacy Policy explains how Bliss Pharmex Pvt. Ltd. collects, uses and safeguards information provided through this website. This is a B2B website for pharmaceutical sourcing inquiries; it is not an online pharmacy."
       sections={[
         {
           heading: "Information we collect",

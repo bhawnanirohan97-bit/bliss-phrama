@@ -1,6 +1,6 @@
 export const SITE = {
-  name: "Bliss Lifesciences",
-  url: "https://www.blisslifesciences.example",
+  name: "Bliss Pharmex",
+  url: "https://www.blisspharmex.example",
   description:
     "Accredited B2B pharmaceutical exporter from India. Quality-assured generic medicines for international distributors, wholesalers, importers and institutional buyers.",
   keywords: [
