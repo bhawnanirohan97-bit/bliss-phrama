@@ -1,0 +1,32 @@
+{
+  "name": "Bliss Lifesciences",
+  "legalName": "Bliss Lifesciences Pvt. Ltd.",
+  "tagline": "Accredited pharmaceutical exporter from India",
+  "description": "Bliss Lifesciences is an India-based pharmaceutical exporter supplying quality-assured generic medicines to distributors, wholesalers, importers and institutional buyers across domestic and international markets. Our portfolio spans antibiotics, cardiovascular, antidiabetics, respiratory, gastrointestinal, dermatological and nutritional categories — all manufactured in WHO-GMP compliant facilities and supplied with complete registration documentation.",
+  "founded": "2012",
+  "addressLine1": "B-7/21, Okhla Industrial Area Phase II",
+  "city": "New Delhi",
+  "state": "Delhi",
+  "postalCode": "110020",
+  "country": "India",
+  "phone": "+91 98675 43210",
+  "phoneHref": "+919867543210",
+  "whatsapp": "+91 98675 43210",
+  "whatsappHref": "919867543210",
+  "email": "exports@blisslifesciences.in",
+  "certifications": [
+    "WHO-GMP",
+    "ISO 9001:2015",
+    "FSSAI",
+    "Pharmexcil Registration"
+  ],
+  "exportMarkets": [
+    "Africa",
+    "Middle East",
+    "South East Asia",
+    "CIS Region",
+    "Latin America",
+    "Domestic India"
+  ],
+  "workingHours": "Mon – Sat, 9:30 AM – 6:30 PM IST"
+}

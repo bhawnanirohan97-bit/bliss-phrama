@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Analgesics">
+  <rect width="512" height="512" fill="#eef5fb"/>
+  <g fill="#ffffff">
+    <rect x="196" y="176" width="120" height="120" rx="28"/>
+    <rect x="258" y="242" width="120" height="120" rx="28"/>
+  </g>
+  <path d="M232 226h48M256 202v48" stroke="#1f5aa8" stroke-width="10" stroke-linecap="round"/>
+  <path d="M318 292h40M338 272v40" stroke="#0e7c7b" stroke-width="12" stroke-linecap="round"/>
+  <g font-family="Segoe UI, Arial, sans-serif" fill="#0e4d92" text-anchor="middle">
+    <text x="256" y="404" font-size="30" font-weight="700">Analgesics</text>
+    
+  </g>
+</svg>

@@ -1,0 +1,50 @@
+[
+  {
+    "slug": "antibiotics",
+    "name": "Antibiotics",
+    "description": "Broad-spectrum oral antibiotics for community infections, formulated to global pharmacopoeia standards.",
+    "image": "/images/categories/antibiotics.svg"
+  },
+  {
+    "slug": "analgesics-and-pain-management",
+    "name": "Analgesics & Pain Management",
+    "description": "Pain relief formulations spanning antipyretics, NSAIDs and combination therapy.",
+    "image": "/images/categories/analgesics.svg"
+  },
+  {
+    "slug": "antidiabetics",
+    "name": "Antidiabetics",
+    "description": "Oral antidiabetic therapies for type-2 diabetes management in monotherapy and combinations.",
+    "image": "/images/categories/antidiabetics.svg"
+  },
+  {
+    "slug": "cardiovascular",
+    "name": "Cardiovascular",
+    "description": "Antihypertensives, statins and cardiac support medications for chronic care programs.",
+    "image": "/images/categories/cardiovascular.svg"
+  },
+  {
+    "slug": "gastrointestinal",
+    "name": "Gastrointestinal",
+    "description": "Acid-reducing and gastroprotective therapies for acid peptic disorders.",
+    "image": "/images/categories/gastrointestinal.svg"
+  },
+  {
+    "slug": "respiratory",
+    "name": "Respiratory",
+    "description": "Antitussive, antihistamine and mucolytic formulations for respiratory care.",
+    "image": "/images/categories/respiratory.svg"
+  },
+  {
+    "slug": "vitamins-and-supplements",
+    "name": "Vitamins & Supplements",
+    "description": "Nutritional supplements and vitamin therapies for daily wellness and deficiency correction.",
+    "image": "/images/categories/vitamins.svg"
+  },
+  {
+    "slug": "dermatological",
+    "name": "Dermatological",
+    "description": "Topical creams and ointments for fungal and bacterial skin conditions.",
+    "image": "/images/categories/dermatological.svg"
+  }
+]
