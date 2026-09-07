@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { getCategories, getCompany } from "@/lib/data";
 import {
@@ -24,16 +23,12 @@ export default function Footer() {
       <div className="mx-auto w-full max-w-7xl px-5 py-14 sm:px-8">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           <div>
-            <Link href="/" className="flex items-center gap-2.5">
-              <span className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-md bg-white p-1">
-                <Image
-                  src="/images/company/logo.png"
-                  alt={company.name}
-                  width={32}
-                  height={32}
-                  className="h-full w-full object-contain"
-                />
-              </span>
+            <Link href="/" className="flex items-center gap-3">
+              <img
+                src="/images/company/logo.png"
+                alt={company.name}
+                style={{ height: "40px", width: "auto", borderRadius: "6px", background: "white", padding: "4px" }}
+              />
               <span className="text-base font-semibold tracking-tight text-white">
                 {company.name}
               </span>
