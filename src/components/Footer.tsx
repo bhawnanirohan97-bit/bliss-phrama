@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { getCategories, getCompany } from "@/lib/data";
 import {
@@ -24,18 +25,14 @@ export default function Footer() {
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           <div>
             <Link href="/" className="flex items-center gap-2.5">
-              <span className="flex h-9 w-9 items-center justify-center rounded-md bg-brand-600">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  className="h-5 w-5 text-white"
-                  aria-hidden
-                >
-                  <path d="M12 6v12M6 12h12" />
-                </svg>
+              <span className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-md bg-white p-1">
+                <Image
+                  src="/images/company/logo.png"
+                  alt={company.name}
+                  width={32}
+                  height={32}
+                  className="h-full w-full object-contain"
+                />
               </span>
               <span className="text-base font-semibold tracking-tight text-white">
                 {company.name}

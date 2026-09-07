@@ -24,6 +24,10 @@ export const metadata: Metadata = {
   description: SITE.description,
   keywords: [...SITE.keywords],
   authors: [{ name: SITE.name }],
+  icons: {
+    icon: "/images/company/logo.png",
+    apple: "/images/company/logo.png",
+  },
   openGraph: {
     type: "website",
     locale: "en_IN",
