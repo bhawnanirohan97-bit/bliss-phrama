@@ -42,10 +42,6 @@ export default function ProductCard({ product }: { product: Product }) {
           </h3>
           <dl className="mt-3 space-y-1.5 text-sm text-slate-600">
             <div className="flex justify-between gap-3">
-              <dt className="text-slate-500">Price</dt>
-              <dd className="font-medium text-slate-700">{product.price}</dd>
-            </div>
-            <div className="flex justify-between gap-3">
               <dt className="text-slate-500">Strength</dt>
               <dd className="font-medium text-slate-700">{product.strength}</dd>
             </div>

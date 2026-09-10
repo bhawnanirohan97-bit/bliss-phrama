@@ -249,7 +249,6 @@ async function main() {
       const specMap = buildSpecMap(raw.isq_det_form);
       const dosageForm = deriveForm(name, categoryName, specMap);
       const strength = deriveStrength(name, specMap);
-      const price = formatPrice(raw.prd_price ?? "");
       const packaging = derivePackaging(specMap, raw.prd_price ?? "", dosageForm);
       const description = buildDescription(name, specMap);
       const tags = buildTags(specMap, dosageForm, categoryName);
@@ -277,7 +276,6 @@ async function main() {
         strength,
         packaging,
         moq: "As per requirement",
-        price,
         description,
         image,
         featured: false,

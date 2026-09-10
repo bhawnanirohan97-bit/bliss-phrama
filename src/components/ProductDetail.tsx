@@ -27,7 +27,6 @@ export default function ProductDetail({
     { label: "Category", value: category?.name ?? product.categorySlug },
     { label: "Dosage form", value: product.dosageForm },
     { label: "Strength", value: product.strength },
-    { label: "Price", value: product.price },
     { label: "Packaging", value: product.packaging },
     { label: "MOQ", value: product.moq },
   ];
