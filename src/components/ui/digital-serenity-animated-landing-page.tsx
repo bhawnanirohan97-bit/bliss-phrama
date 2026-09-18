@@ -188,20 +188,18 @@ const DigitalSerenity = () => {
           <div className="text-center max-w-5xl mx-auto relative">
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extralight leading-tight tracking-tight text-slate-50 text-decoration-animate">
               <div className="mb-4 md:mb-6">
-                <span className="word-animate" data-delay="700">Find</span>
-                <span className="word-animate" data-delay="850">your</span>
-                <span className="word-animate" data-delay="1000">center,</span>
+                <span className="word-animate" data-delay="700">Trusted</span>
+                <span className="word-animate" data-delay="850">medicines,</span>
               </div>
               <div className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-thin text-slate-300 leading-relaxed tracking-wide">
                 <span className="word-animate" data-delay="1400">where</span>
-                <span className="word-animate" data-delay="1550">peace</span>
+                <span className="word-animate" data-delay="1550">quality</span>
                 <span className="word-animate" data-delay="1700">resides</span>
                 <span className="word-animate" data-delay="1850">and</span>
                 <span className="word-animate" data-delay="2000">clarity</span>
-                <span className="word-animate" data-delay="2150">awakens</span>
-                <span className="word-animate" data-delay="2300">within</span>
-                <span className="word-animate" data-delay="2450">the</span>
-                <span className="word-animate" data-delay="2600">soul.</span>
+                <span className="word-animate" data-delay="2150">reaches</span>
+                <span className="word-animate" data-delay="2300">every</span>
+                <span className="word-animate" data-delay="2450">market.</span>
               </div>
             </h1>
             <div className="absolute -left-6 sm:-left-8 top-1/2 transform -translate-y-1/2 w-3 sm:w-4 h-px bg-slate-300 opacity-0" style={{ animation: 'word-appear 1s ease-out forwards', animationDelay: '3.2s' }}></div>
