@@ -140,6 +140,22 @@ export function TruckIcon(props: IconProps) {
   );
 }
 
+export function StarIcon(props: IconProps) {
+  const { className, ...rest } = props;
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden
+      {...rest}
+    >
+      <path d="M12 2.5l2.85 5.9 6.4.575-4.7 4.35 1.38 6.3L12 16.55 6.07 19.625l1.38-6.3-4.7-4.35 6.4-.575L12 2.5z" />
+    </svg>
+  );
+}
+
 export function DocumentIcon(props: IconProps) {
   return (
     <svg {...base(props)}>

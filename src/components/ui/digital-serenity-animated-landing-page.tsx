@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { StarIcon } from "@/components/icons";
 
 type Ripple = { id: number; x: number; y: number };
 type MouseGradientStyle = { left: string; top: string; opacity: number };
@@ -218,6 +219,20 @@ const DigitalSerenity = () => {
               <div className="w-1 h-1 bg-slate-300 rounded-full opacity-40"></div>
               <div className="w-1 h-1 bg-slate-300 rounded-full opacity-60"></div>
               <div className="w-1 h-1 bg-slate-300 rounded-full opacity-40"></div>
+            </div>
+
+            <div className="mt-8 flex flex-col items-center gap-2.5 sm:flex-row sm:gap-20">
+              <div className="opacity-0" style={{ animation: 'word-appear 1s ease-out forwards', animationDelay: '4.6s' }}>
+                <div className="flex items-center gap-2.5 rounded-full border border-amber-400/25 bg-amber-400/[0.06] px-4 py-2 ring-1 ring-inset ring-white/5">
+                  <span className="flex -space-x-0.5 text-amber-400" aria-label="4.9 out of 5 stars">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <StarIcon key={i} className="h-3.5 w-3.5" />
+                    ))}
+                  </span>
+                  <span className="text-sm font-semibold text-amber-300">4.9</span>
+                  <span className="text-xs font-medium text-slate-300">Rated on IndiaMART</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
