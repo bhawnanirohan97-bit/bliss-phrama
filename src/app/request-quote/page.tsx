@@ -20,8 +20,8 @@ export default async function RequestQuotePage({
   const products = getProducts();
 
   return (
-    <div className="bg-slate-50">
-      <div className="border-b border-slate-200 bg-white">
+    <div className="bg-slate-950">
+      <div className="border-b border-slate-800 bg-slate-900/40">
         <div className="mx-auto w-full max-w-7xl px-5 py-10 sm:px-8">
           <Breadcrumbs
             items={[
@@ -29,10 +29,10 @@ export default async function RequestQuotePage({
               { label: "Request a Quote" },
             ]}
           />
-          <h1 className="mt-4 text-4xl font-semibold tracking-tight text-slate-900">
+          <h1 className="mt-4 text-4xl font-semibold tracking-tight text-slate-100">
             Request a Quote
           </h1>
-          <p className="mt-3 max-w-2xl text-base leading-7 text-slate-600">
+          <p className="mt-3 max-w-2xl text-base leading-7 text-slate-400">
             Share your requirement and our exports team will respond with
             product availability, pack options, MOQs and pricing within one
             business day.
@@ -42,8 +42,8 @@ export default async function RequestQuotePage({
 
       <div className="mx-auto w-full max-w-7xl px-5 py-12 sm:px-8">
         <div className="grid gap-10 lg:grid-cols-3">
-          <div className="rounded-lg border border-slate-200 bg-white p-6 sm:p-8 lg:col-span-2">
-            <h2 className="text-lg font-semibold text-slate-900">
+          <div className="rounded-lg border border-slate-800 bg-white/[0.03] p-6 sm:p-8 lg:col-span-2">
+            <h2 className="text-lg font-semibold text-slate-100">
               Tell us what you need
             </h2>
             <div className="mt-6">
@@ -55,11 +55,11 @@ export default async function RequestQuotePage({
           </div>
 
           <aside className="space-y-4">
-            <div className="rounded-lg border border-slate-200 bg-white p-6">
+            <div className="rounded-lg border border-slate-800 bg-white/[0.03] p-6">
               <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-500">
                 What happens next
               </h2>
-              <ol className="mt-4 space-y-4 text-sm text-slate-600">
+              <ol className="mt-4 space-y-4 text-sm text-slate-400">
                 {[
                   "We review product availability and registration status.",
                   "You receive a detailed quotation with pricing and pack options.",
@@ -67,7 +67,7 @@ export default async function RequestQuotePage({
                   "Confirmed orders ship with full export documentation.",
                 ].map((step, index) => (
                   <li key={step} className="flex gap-3">
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-50 text-xs font-bold text-brand-800">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-500/15 text-xs font-bold text-brand-400">
                       {index + 1}
                     </span>
                     <p className="leading-6">{step}</p>
@@ -76,25 +76,25 @@ export default async function RequestQuotePage({
               </ol>
             </div>
 
-            <div className="rounded-lg border border-slate-200 bg-white p-6">
+            <div className="rounded-lg border border-slate-800 bg-white/[0.03] p-6">
               <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-500">
                 Quotation checklist
               </h2>
-              <ul className="mt-4 space-y-3 text-sm text-slate-600">
+              <ul className="mt-4 space-y-3 text-sm text-slate-400">
                 <li className="flex gap-2.5">
-                  <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
+                  <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-green-500" />
                   Product names / generic names
                 </li>
                 <li className="flex gap-2.5">
-                  <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
+                  <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-green-500" />
                   Strength, dosage form & pack size
                 </li>
                 <li className="flex gap-2.5">
-                  <DocumentIcon className="mt-0.5 h-4 w-4 shrink-0 text-brand-700" />
+                  <DocumentIcon className="mt-0.5 h-4 w-4 shrink-0 text-brand-400" />
                   Required documentation (CoA, dossier, registration)
                 </li>
                 <li className="flex gap-2.5">
-                  <GlobeIcon className="mt-0.5 h-4 w-4 shrink-0 text-brand-700" />
+                  <GlobeIcon className="mt-0.5 h-4 w-4 shrink-0 text-brand-400" />
                   Destination country & quantities
                 </li>
               </ul>

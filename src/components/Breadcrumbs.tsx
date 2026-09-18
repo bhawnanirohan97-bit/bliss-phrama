@@ -9,7 +9,7 @@ export type Crumb = {
 export default function Breadcrumbs({ items }: { items: Crumb[] }) {
   return (
     <nav aria-label="Breadcrumb">
-      <ol className="flex flex-wrap items-center gap-1.5 text-sm text-slate-500">
+      <ol className="flex flex-wrap items-center gap-1.5 text-sm text-slate-400">
         {items.map((item, index) => {
           const isLast = index === items.length - 1;
           return (
@@ -17,19 +17,19 @@ export default function Breadcrumbs({ items }: { items: Crumb[] }) {
               {item.href && !isLast ? (
                 <Link
                   href={item.href}
-                  className="transition-colors hover:text-brand-700"
+                  className="transition-colors hover:text-brand-400"
                 >
                   {item.label}
                 </Link>
               ) : (
                 <span
-                  className={isLast ? "font-medium text-slate-900" : undefined}
+                  className={isLast ? "font-medium text-slate-100" : undefined}
                   aria-current={isLast ? "page" : undefined}
                 >
                   {item.label}
                 </span>
               )}
-              {!isLast && <ChevronRightIcon className="h-3.5 w-3.5 text-slate-400" />}
+              {!isLast && <ChevronRightIcon className="h-3.5 w-3.5 text-slate-600" />}
             </li>
           );
         })}

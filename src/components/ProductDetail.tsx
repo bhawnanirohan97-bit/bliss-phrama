@@ -32,11 +32,11 @@ export default function ProductDetail({
   ];
 
   return (
-    <div className="bg-slate-50">
-      <div className="border-b border-slate-200 bg-white">
+    <div className="bg-slate-950">
+      <div className="border-b border-slate-800 bg-slate-900/40">
         <div className="mx-auto w-full max-w-7xl px-5 py-10 sm:px-8">
           <div className="grid gap-10 lg:grid-cols-2">
-            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
+            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg border border-slate-800 bg-slate-900">
               <Image
                 src={product.image}
                 alt={product.name}
@@ -48,13 +48,13 @@ export default function ProductDetail({
             </div>
 
             <div>
-              <p className="text-sm font-semibold uppercase tracking-widest text-brand-700">
+              <p className="text-sm font-semibold uppercase tracking-widest text-brand-400">
                 {category?.name}
               </p>
-              <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+              <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-100 sm:text-4xl">
                 {product.name}
               </h1>
-              <p className="mt-4 text-base leading-7 text-slate-600">
+              <p className="mt-4 text-base leading-7 text-slate-400">
                 {product.description}
               </p>
 
@@ -62,12 +62,12 @@ export default function ProductDetail({
                 {specs.map((spec) => (
                   <div
                     key={spec.label}
-                    className="border-b border-slate-100 pb-3"
+                    className="border-b border-slate-800 pb-3"
                   >
                     <dt className="text-xs font-semibold uppercase tracking-wider text-slate-500">
                       {spec.label}
                     </dt>
-                    <dd className="mt-1 text-sm font-medium text-slate-900">
+                    <dd className="mt-1 text-sm font-medium text-slate-100">
                       {spec.value}
                     </dd>
                   </div>
@@ -91,7 +91,7 @@ export default function ProductDetail({
                     href={`/request-quote?product=${encodeURIComponent(
                       product.slug
                     )}`}
-                    className="inline-flex items-center justify-center rounded-md bg-brand-700 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-brand-800"
+                    className="inline-flex items-center justify-center rounded-md bg-brand-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-brand-700"
                   >
                     Request a Detailed Quote
                   </Link>
@@ -99,7 +99,7 @@ export default function ProductDetail({
                     href={`mailto:${company.email}?subject=${encodeURIComponent(
                       `RFQ: ${product.name}`
                     )}`}
-                    className="inline-flex items-center justify-center gap-2 rounded-md border border-slate-300 bg-white px-6 py-3.5 text-sm font-semibold text-slate-700 transition-colors hover:border-brand-300 hover:text-brand-700"
+                    className="inline-flex items-center justify-center gap-2 rounded-md border border-slate-700 bg-white/[0.03] px-6 py-3.5 text-sm font-semibold text-slate-300 transition-colors hover:border-brand-500 hover:text-brand-300"
                   >
                     <MailIcon className="h-4 w-4" />
                     Email
@@ -114,17 +114,17 @@ export default function ProductDetail({
       <div className="mx-auto w-full max-w-7xl px-5 py-14 sm:px-8">
         <div className="grid gap-10 lg:grid-cols-3">
           <div className="lg:col-span-2">
-            <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
+            <h2 className="text-2xl font-semibold tracking-tight text-slate-100">
               About this product
             </h2>
-            <p className="mt-4 text-base leading-7 text-slate-600">
+            <p className="mt-4 text-base leading-7 text-slate-400">
               This formulation is manufactured in WHO-GMP compliant facilities
               and supplied with certificates of analysis, stability data and
               registration documentation on request. Pack sizes and labeling
               can be customized to your market requirements.
             </p>
 
-            <h3 className="mt-8 text-lg font-semibold text-slate-900">
+            <h3 className="mt-8 text-lg font-semibold text-slate-100">
               Included with every supply
             </h3>
             <ul className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -138,20 +138,20 @@ export default function ProductDetail({
               ].map((item) => (
                 <li
                   key={item}
-                  className="flex items-center gap-2.5 rounded-md border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700"
+                  className="flex items-center gap-2.5 rounded-md border border-slate-800 bg-white/[0.03] px-4 py-3 text-sm font-medium text-slate-300"
                 >
-                  <CheckIcon className="h-4 w-4 shrink-0 text-green-600" />
+                  <CheckIcon className="h-4 w-4 shrink-0 text-green-500" />
                   {item}
                 </li>
               ))}
             </ul>
           </div>
 
-          <aside className="h-fit rounded-lg border border-slate-200 bg-white p-6">
+          <aside className="h-fit rounded-lg border border-slate-800 bg-white/[0.03] p-6">
             <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-500">
-              Export & compliance
+              Export &amp; compliance
             </h3>
-            <ul className="mt-4 space-y-4 text-sm text-slate-600">
+            <ul className="mt-4 space-y-4 text-sm text-slate-400">
               <li className="flex gap-3">
                 <ShieldChip />
                 <span>
@@ -159,14 +159,14 @@ export default function ProductDetail({
                 </span>
               </li>
               <li className="flex gap-3">
-                <GlobeIcon className="mt-0.5 h-4 w-4 shrink-0 text-brand-700" />
+                <GlobeIcon className="mt-0.5 h-4 w-4 shrink-0 text-brand-400" />
                 <span>
                   Documented support for registration in your destination
                   market.
                 </span>
               </li>
               <li className="flex gap-3">
-                <DocumentIcon className="mt-0.5 h-4 w-4 shrink-0 text-brand-700" />
+                <DocumentIcon className="mt-0.5 h-4 w-4 shrink-0 text-brand-400" />
                 <span>
                   Compliance documentation provided after quality evaluation of
                   your order.
@@ -177,7 +177,7 @@ export default function ProductDetail({
         </div>
 
         <div className="mt-16">
-          <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
+          <h2 className="text-2xl font-semibold tracking-tight text-slate-100">
             Related products
           </h2>
           <div className="mt-6">
@@ -198,7 +198,7 @@ function ShieldChip() {
         viewBox="0 0 24 24"
         stroke="currentColor"
         strokeWidth={1.8}
-        className="h-4 w-4 text-brand-700"
+        className="h-4 w-4 text-brand-400"
         aria-hidden
       >
         <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />

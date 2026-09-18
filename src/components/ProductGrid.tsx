@@ -4,8 +4,8 @@ import ProductCard from "@/components/ProductCard";
 export default function ProductGrid({ products }: { products: Product[] }) {
   if (products.length === 0) {
     return (
-      <div className="rounded-lg border border-dashed border-slate-300 bg-slate-50 px-6 py-16 text-center">
-        <p className="text-base font-medium text-slate-700">
+      <div className="rounded-lg border border-dashed border-slate-700 bg-white/[0.02] px-6 py-16 text-center">
+        <p className="text-base font-medium text-slate-300">
           No products match your search.
         </p>
         <p className="mt-1 text-sm text-slate-500">

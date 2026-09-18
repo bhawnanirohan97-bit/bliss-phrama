@@ -27,14 +27,15 @@
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-primary: var(--font-geist-sans);
 }
 
 body {
-  background: #ffffff;
-  color: var(--color-slate-900);
+  background: #020617;
+  color: #f1f5f9;
   font-family: var(--font-sans);
 }
 
 ::selection {
-  background-color: var(--color-brand-100);
+  background-color: var(--color-brand-800);
 }

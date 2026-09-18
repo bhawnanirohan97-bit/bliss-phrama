@@ -16,7 +16,7 @@ export default function ProductCard({ product }: { product: Product }) {
   const category = getCategoryBySlug(product.categorySlug);
 
   return (
-    <article className="flex flex-col overflow-hidden rounded-lg border border-slate-200 bg-white transition-all hover:border-brand-300 hover:shadow-md">
+    <article className="flex flex-col overflow-hidden rounded-lg border border-slate-800 bg-white/[0.03] transition-all hover:border-brand-500 hover:bg-white/[0.05]">
       <a
         href={whatsappUrl(product)}
         target="_blank"
@@ -24,7 +24,7 @@ export default function ProductCard({ product }: { product: Product }) {
         className="group block"
         aria-label={`Enquire about ${product.name} on WhatsApp`}
       >
-        <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-50">
+        <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-900">
           <Image
             src={product.image}
             alt={product.name}
@@ -34,26 +34,26 @@ export default function ProductCard({ product }: { product: Product }) {
           />
         </div>
         <div className="flex flex-1 flex-col p-5">
-          <p className="text-xs font-semibold uppercase tracking-widest text-brand-700">
+          <p className="text-xs font-semibold uppercase tracking-widest text-brand-400">
             {category?.name}
           </p>
-          <h3 className="mt-1.5 text-base font-semibold leading-snug text-slate-900">
+          <h3 className="mt-1.5 text-base font-semibold leading-snug text-slate-100">
             {product.name}
           </h3>
-          <dl className="mt-3 space-y-1.5 text-sm text-slate-600">
+          <dl className="mt-3 space-y-1.5 text-sm text-slate-400">
             <div className="flex justify-between gap-3">
               <dt className="text-slate-500">Strength</dt>
-              <dd className="font-medium text-slate-700">{product.strength}</dd>
+              <dd className="font-medium text-slate-200">{product.strength}</dd>
             </div>
             <div className="flex justify-between gap-3">
               <dt className="text-slate-500">Packaging</dt>
-              <dd className="font-medium text-slate-700">
+              <dd className="font-medium text-slate-200">
                 {product.packaging}
               </dd>
             </div>
             <div className="flex justify-between gap-3">
               <dt className="text-slate-500">MOQ</dt>
-              <dd className="font-medium text-slate-700">{product.moq}</dd>
+              <dd className="font-medium text-slate-200">{product.moq}</dd>
             </div>
           </dl>
           <span className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-md bg-green-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors group-hover:bg-green-700">
@@ -62,10 +62,10 @@ export default function ProductCard({ product }: { product: Product }) {
           </span>
         </div>
       </a>
-      <div className="border-t border-slate-100 p-5 pt-4 text-center">
+      <div className="border-t border-slate-800 p-5 pt-4 text-center">
         <Link
           href={`/products/${product.slug}`}
-          className="text-sm font-semibold text-brand-700 transition-colors hover:text-brand-800"
+          className="text-sm font-semibold text-brand-400 transition-colors hover:text-brand-300"
         >
           View full details
         </Link>

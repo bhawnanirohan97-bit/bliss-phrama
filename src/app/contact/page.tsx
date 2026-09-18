@@ -22,16 +22,16 @@ export default function ContactPage() {
   const company = getCompany();
 
   return (
-    <div className="bg-slate-50">
-      <div className="border-b border-slate-200 bg-white">
+    <div className="bg-slate-950">
+      <div className="border-b border-slate-800 bg-slate-900/40">
         <div className="mx-auto w-full max-w-7xl px-5 py-10 sm:px-8">
           <Breadcrumbs
             items={[{ label: "Home", href: "/" }, { label: "Contact" }]}
           />
-          <h1 className="mt-4 text-4xl font-semibold tracking-tight text-slate-900">
+          <h1 className="mt-4 text-4xl font-semibold tracking-tight text-slate-100">
             Contact Us
           </h1>
-          <p className="mt-3 max-w-2xl text-base leading-7 text-slate-600">
+          <p className="mt-3 max-w-2xl text-base leading-7 text-slate-400">
             Reach our exports and sales team directly. We respond to inquiries
             within one business day.
           </p>
@@ -41,38 +41,38 @@ export default function ContactPage() {
       <div className="mx-auto w-full max-w-7xl px-5 py-12 sm:px-8">
         <div className="grid gap-10 lg:grid-cols-5">
           <div className="space-y-4 lg:col-span-2">
-            <div className="rounded-lg border border-slate-200 bg-white p-6">
-              <h2 className="text-lg font-semibold text-slate-900">
+            <div className="rounded-lg border border-slate-800 bg-white/[0.03] p-6">
+              <h2 className="text-lg font-semibold text-slate-100">
                 Sales & exports office
               </h2>
-              <ul className="mt-4 space-y-3.5 text-sm text-slate-600">
+              <ul className="mt-4 space-y-3.5 text-sm text-slate-400">
                 <li className="flex gap-3">
-                  <MapPinIcon className="mt-0.5 h-5 w-5 shrink-0 text-brand-700" />
+                  <MapPinIcon className="mt-0.5 h-5 w-5 shrink-0 text-brand-400" />
                   <span>
                     {company.addressLine1}, {company.city}, {company.state}{" "}
                     {company.postalCode}, {company.country}
                   </span>
                 </li>
                 <li className="flex gap-3">
-                  <PhoneIcon className="mt-0.5 h-5 w-5 shrink-0 text-brand-700" />
+                  <PhoneIcon className="mt-0.5 h-5 w-5 shrink-0 text-brand-400" />
                   <a
                     href={`tel:+${company.phoneHref}`}
-                    className="font-medium text-slate-800 hover:text-brand-700"
+                    className="font-medium text-slate-200 hover:text-brand-400"
                   >
                     {company.phone}
                   </a>
                 </li>
                 <li className="flex gap-3">
-                  <MailIcon className="mt-0.5 h-5 w-5 shrink-0 text-brand-700" />
+                  <MailIcon className="mt-0.5 h-5 w-5 shrink-0 text-brand-400" />
                   <a
                     href={`mailto:${company.email}`}
-                    className="font-medium text-slate-800 hover:text-brand-700"
+                    className="font-medium text-slate-200 hover:text-brand-400"
                   >
                     {company.email}
                   </a>
                 </li>
                 <li className="flex gap-3">
-                  <ClockIcon className="mt-0.5 h-5 w-5 shrink-0 text-brand-700" />
+                  <ClockIcon className="mt-0.5 h-5 w-5 shrink-0 text-brand-400" />
                   <span>{company.workingHours}</span>
                 </li>
               </ul>
@@ -93,7 +93,7 @@ export default function ContactPage() {
               <WhatsAppIcon className="h-8 w-8 shrink-0" />
             </a>
 
-            <div className="rounded-lg border border-slate-200 bg-white p-6">
+            <div className="rounded-lg border border-slate-800 bg-white/[0.03] p-6">
               <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-slate-500">
                 <GlobeIcon className="h-4 w-4" />
                 Export markets
@@ -102,7 +102,7 @@ export default function ContactPage() {
                 {company.exportMarkets.map((market) => (
                   <span
                     key={market}
-                    className="rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-800"
+                    className="rounded-full border border-brand-500/30 bg-brand-500/10 px-3 py-1 text-xs font-semibold text-brand-300"
                   >
                     {market}
                   </span>
@@ -111,11 +111,11 @@ export default function ContactPage() {
             </div>
           </div>
 
-          <div className="rounded-lg border border-slate-200 bg-white p-6 sm:p-8 lg:col-span-3">
-            <h2 className="text-lg font-semibold text-slate-900">
+          <div className="rounded-lg border border-slate-800 bg-white/[0.03] p-6 sm:p-8 lg:col-span-3">
+            <h2 className="text-lg font-semibold text-slate-100">
               Send us a message
             </h2>
-            <p className="mt-2 text-sm leading-6 text-slate-600">
+            <p className="mt-2 text-sm leading-6 text-slate-400">
               Fill in the form and the right person from our team will get back
               to you.
             </p>

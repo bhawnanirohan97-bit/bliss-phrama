@@ -15,16 +15,16 @@ export default function ProductsPage() {
   const categories = getCategories();
 
   return (
-    <div className="bg-slate-50">
-      <div className="border-b border-slate-200 bg-white">
+    <div className="bg-slate-950">
+      <div className="border-b border-slate-800 bg-slate-900/40">
         <div className="mx-auto w-full max-w-7xl px-5 py-10 sm:px-8">
           <Breadcrumbs
             items={[{ label: "Home", href: "/" }, { label: "Products" }]}
           />
-          <h1 className="mt-4 text-4xl font-semibold tracking-tight text-slate-900">
+          <h1 className="mt-4 text-4xl font-semibold tracking-tight text-slate-100">
             Products
           </h1>
-          <p className="mt-3 max-w-2xl text-base leading-7 text-slate-600">
+          <p className="mt-3 max-w-2xl text-base leading-7 text-slate-400">
             Search our pharmaceutical catalog and request a quotation for any
             formulation. All products are supplied with complete documentation
             and export support.

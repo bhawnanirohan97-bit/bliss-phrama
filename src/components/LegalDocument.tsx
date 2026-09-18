@@ -17,17 +17,17 @@ export default function LegalDocument({
   sections: Section[];
 }) {
   return (
-    <div className="bg-slate-50">
-      <div className="border-b border-slate-200 bg-white">
+    <div className="bg-slate-950">
+      <div className="border-b border-slate-800 bg-slate-900/40">
         <div className="mx-auto w-full max-w-3xl px-5 py-10 sm:px-8">
           <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: title }]} />
-          <h1 className="mt-4 text-4xl font-semibold tracking-tight text-slate-900">
+          <h1 className="mt-4 text-4xl font-semibold tracking-tight text-slate-100">
             {title}
           </h1>
           <p className="mt-3 text-sm font-medium text-slate-500">
             Last updated: {updated}
           </p>
-          <p className="mt-4 text-base leading-7 text-slate-600">{lead}</p>
+          <p className="mt-4 text-base leading-7 text-slate-400">{lead}</p>
         </div>
       </div>
 
@@ -35,10 +35,10 @@ export default function LegalDocument({
         <div className="space-y-10">
           {sections.map((section, index) => (
             <section key={section.heading}>
-              <h2 className="text-xl font-semibold tracking-tight text-slate-900">
+              <h2 className="text-xl font-semibold tracking-tight text-slate-100">
                 {index + 1}. {section.heading}
               </h2>
-              <p className="mt-3 text-base leading-7 text-slate-600">
+              <p className="mt-3 text-base leading-7 text-slate-400">
                 {section.body}
               </p>
             </section>

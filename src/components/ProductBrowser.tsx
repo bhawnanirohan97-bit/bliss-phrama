@@ -5,6 +5,9 @@ import type { Category, Product } from "@/lib/types";
 import ProductGrid from "@/components/ProductGrid";
 import { SearchIcon } from "@/components/icons";
 
+const inputClass =
+  "rounded-md border border-slate-700 bg-slate-900 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20";
+
 export default function ProductBrowser({
   products,
   categories,
@@ -49,25 +52,25 @@ export default function ProductBrowser({
 
   return (
     <div>
-      <div className="flex flex-col gap-4 rounded-lg border border-slate-200 bg-white p-5 shadow-sm lg:flex-row lg:items-end lg:justify-between">
+      <div className="flex flex-col gap-4 rounded-lg border border-slate-800 bg-white/[0.03] p-5 lg:flex-row lg:items-end lg:justify-between">
         <div className="flex flex-1 flex-col gap-4 lg:flex-row lg:items-center">
           <label className="relative flex-1">
             <span className="sr-only">Search products</span>
-            <SearchIcon className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+            <SearchIcon className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-500" />
             <input
               type="search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Search by product name, strength or category…"
-              className="w-full rounded-md border border-slate-300 bg-white py-2.5 pl-11 pr-4 text-sm text-slate-900 placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100"
+              className={`w-full pl-11 pr-4 ${inputClass}`}
             />
           </label>
-          <label className="flex items-center gap-2 text-sm text-slate-600">
+          <label className="flex items-center gap-2 text-sm text-slate-400">
             <span className="shrink-0 font-medium">Category</span>
             <select
               value={categorySlug}
               onChange={(event) => setCategorySlug(event.target.value)}
-              className="rounded-md border border-slate-300 bg-white py-2.5 pl-3 pr-8 text-sm text-slate-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100"
+              className={`pl-3 pr-8 ${inputClass}`}
             >
               <option value="all">All categories</option>
               {categories.map((category) => (
@@ -77,14 +80,14 @@ export default function ProductBrowser({
               ))}
             </select>
           </label>
-          <label className="flex items-center gap-2 text-sm text-slate-600">
+          <label className="flex items-center gap-2 text-sm text-slate-400">
             <span className="shrink-0 font-medium">Sort</span>
             <select
               value={sort}
               onChange={(event) =>
                 setSort(event.target.value as "name" | "category")
               }
-              className="rounded-md border border-slate-300 bg-white py-2.5 pl-3 pr-8 text-sm text-slate-900 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100"
+              className={`pl-3 pr-8 ${inputClass}`}
             >
               <option value="name">Name A–Z</option>
               <option value="category">Category</option>
@@ -98,7 +101,7 @@ export default function ProductBrowser({
               setQuery("");
               setCategorySlug("all");
             }}
-            className="self-start text-sm font-semibold text-brand-700 hover:text-brand-800 lg:self-auto"
+            className="self-start text-sm font-semibold text-brand-400 hover:text-brand-300 lg:self-auto"
           >
             Clear filters
           </button>

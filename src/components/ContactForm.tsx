@@ -5,10 +5,10 @@ import { getCompany } from "@/lib/data";
 import { WhatsAppIcon } from "@/components/icons";
 
 const inputClass =
-  "w-full rounded-md border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100";
+  "w-full rounded-md border border-slate-700 bg-slate-900 px-3.5 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20";
 
 const labelClass =
-  "block text-sm font-semibold text-slate-700";
+  "block text-sm font-semibold text-slate-300";
 
 type Status = "idle" | "submitting" | "success";
 
@@ -40,11 +40,11 @@ export default function ContactForm() {
   return (
     <div>
       {status === "success" ? (
-        <div className="rounded-lg border border-green-200 bg-green-50 p-6">
-          <h3 className="text-lg font-semibold text-green-900">
+        <div className="rounded-lg border border-green-500/30 bg-green-500/10 p-6">
+          <h3 className="text-lg font-semibold text-green-200">
             Thank you — message received
           </h3>
-          <p className="mt-2 text-sm leading-6 text-green-800">
+          <p className="mt-2 text-sm leading-6 text-green-300">
             Our sales team will get back to you shortly. For a faster response,
             reach us directly on WhatsApp.
           </p>
@@ -153,7 +153,7 @@ export default function ContactForm() {
           <button
             type="submit"
             disabled={status === "submitting"}
-            className="inline-flex items-center justify-center rounded-md bg-brand-700 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-brand-800 disabled:opacity-60"
+            className="inline-flex items-center justify-center rounded-md bg-brand-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-brand-700 disabled:opacity-60"
           >
             {status === "submitting" ? "Sending…" : "Send Message"}
           </button>

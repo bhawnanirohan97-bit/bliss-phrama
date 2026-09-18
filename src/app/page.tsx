@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Hero from "@/components/Hero";
+import DigitalSerenity from "@/components/ui/digital-serenity-animated-landing-page";
 import TrustStrip from "@/components/TrustStrip";
 import SectionHeading from "@/components/SectionHeading";
 import CategoryCard from "@/components/CategoryCard";
@@ -23,7 +23,7 @@ export default function HomePage() {
 
   return (
     <>
-      <Hero />
+      <DigitalSerenity />
       <TrustStrip />
 
       <section className="mx-auto w-full max-w-7xl px-5 py-16 sm:px-8 lg:py-20">
@@ -38,18 +38,18 @@ export default function HomePage() {
               {company.certifications.map((certification) => (
                 <div
                   key={certification}
-                  className="flex items-center gap-3 rounded-lg border border-slate-200 bg-white px-4 py-3.5"
+                  className="flex items-center gap-3 rounded-lg border border-slate-800 bg-white/[0.03] px-4 py-3.5"
                 >
-                  <ShieldIcon className="h-5 w-5 shrink-0 text-brand-700" />
-                  <span className="text-sm font-semibold text-slate-800">
+                  <ShieldIcon className="h-5 w-5 shrink-0 text-brand-400" />
+                  <span className="text-sm font-semibold text-slate-200">
                     {certification}
                   </span>
                 </div>
               ))}
             </div>
           </div>
-          <div className="rounded-lg border border-slate-200 bg-slate-50 p-8">
-            <h3 className="text-lg font-semibold text-slate-900">
+          <div className="rounded-lg border border-slate-800 bg-white/[0.03] p-8">
+            <h3 className="text-lg font-semibold text-slate-100">
               Why global buyers source with us
             </h3>
             <ul className="mt-5 space-y-4">
@@ -71,12 +71,12 @@ export default function HomePage() {
                 },
               ].map((item) => (
                 <li key={item.title} className="flex gap-3.5">
-                  <item.icon className="mt-0.5 h-5 w-5 shrink-0 text-brand-700" />
+                  <item.icon className="mt-0.5 h-5 w-5 shrink-0 text-brand-400" />
                   <div>
-                    <p className="text-sm font-semibold text-slate-900">
+                    <p className="text-sm font-semibold text-slate-100">
                       {item.title}
                     </p>
-                    <p className="mt-1 text-sm leading-6 text-slate-600">
+                    <p className="mt-1 text-sm leading-6 text-slate-400">
                       {item.text}
                     </p>
                   </div>
@@ -87,7 +87,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="border-t border-slate-200 bg-white">
+      <section className="border-t border-slate-800 bg-slate-950">
         <div className="mx-auto w-full max-w-7xl px-5 py-16 sm:px-8 lg:py-20">
           <SectionHeading
             eyebrow="Browse by Category"
@@ -102,7 +102,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="border-t border-slate-200 bg-slate-50">
+      <section className="border-t border-slate-800 bg-slate-900/20">
         <div className="mx-auto w-full max-w-7xl px-5 py-16 sm:px-8 lg:py-20">
           <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
             <SectionHeading
@@ -112,7 +112,7 @@ export default function HomePage() {
             />
             <Link
               href="/products"
-              className="inline-flex shrink-0 items-center justify-center rounded-md border border-brand-700 px-5 py-2.5 text-sm font-semibold text-brand-700 transition-colors hover:bg-brand-50"
+              className="inline-flex shrink-0 items-center justify-center rounded-md border border-brand-500 px-5 py-2.5 text-sm font-semibold text-brand-400 transition-colors hover:bg-brand-500/10"
             >
               View all products
             </Link>
