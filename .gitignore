@@ -43,3 +43,6 @@ next-env.d.ts
 # confidential client documents
 *.docx
 *.pdf
+
+.vercel
+.env*
