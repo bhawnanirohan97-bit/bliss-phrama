@@ -65,12 +65,12 @@ export default function ProductBrowser({
               className={`w-full pl-11 pr-4 ${inputClass}`}
             />
           </label>
-          <label className="flex items-center gap-2 text-sm text-slate-400">
+          <label className="flex flex-col gap-1.5 text-sm text-slate-400 sm:flex-row sm:items-center sm:gap-2">
             <span className="shrink-0 font-medium">Category</span>
             <select
               value={categorySlug}
               onChange={(event) => setCategorySlug(event.target.value)}
-              className={`pl-3 pr-8 ${inputClass}`}
+              className={`w-full pl-3 pr-8 sm:w-auto sm:min-w-52 ${inputClass}`}
             >
               <option value="all">All categories</option>
               {categories.map((category) => (
@@ -80,14 +80,14 @@ export default function ProductBrowser({
               ))}
             </select>
           </label>
-          <label className="flex items-center gap-2 text-sm text-slate-400">
+          <label className="flex flex-col gap-1.5 text-sm text-slate-400 sm:flex-row sm:items-center sm:gap-2">
             <span className="shrink-0 font-medium">Sort</span>
             <select
               value={sort}
               onChange={(event) =>
                 setSort(event.target.value as "name" | "category")
               }
-              className={`pl-3 pr-8 ${inputClass}`}
+              className={`w-full pl-3 pr-8 sm:w-auto sm:min-w-40 ${inputClass}`}
             >
               <option value="name">Name A–Z</option>
               <option value="category">Category</option>
