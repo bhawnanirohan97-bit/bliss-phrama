@@ -102,9 +102,26 @@ async function handleLeadBought(leadData) {
   const newCount = (data.boughtCount || 0) + 1;
   await chrome.storage.local.set({ boughtCount: newCount });
 
-  const desc = leadData.product || leadData.inquiry_text || 'Lead';
+  const desc = leadData.product || leadData.product_name || leadData.inquiry_text || 'Lead';
   const country = leadData.country || leadData.destination_country || 'Foreign';
   addLog(`✅ BOUGHT LEAD: ${desc.slice(0, 40)}... [${country}] (Total today: ${newCount})`, 'success');
+
+  // Sync to local dashboard database immediately so it shows up in Inbox & Dashboard
+  try {
+    const recordEndpoint = 'http://127.0.0.1:8000/api/ai-bot/record-lead';
+    const resp = await fetch(recordEndpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(leadData)
+    });
+    const saved = await resp.json();
+    console.log('[Bliss Auto-Buyer] Lead saved to local database:', saved);
+  } catch (err) {
+    console.warn('[Bliss Auto-Buyer] Could not sync lead to dashboard database:', err);
+  }
 
   return { newCount };
 }
