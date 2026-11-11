@@ -9,7 +9,7 @@
             <p>What arrived, what is waiting, and whether the bot is actually working.</p>
         </div>
         <div class="btn-row">
-            <a class="btn" href="{{ route('leads.index') }}">Open inbox</a>
+            <a class="btn btn-primary" href="{{ route('settings.edit') }}">AI Settings & Targets</a>
             <a class="btn btn-ghost" href="{{ route('catalogue.index') }}">Review catalogue</a>
         </div>
     </div>

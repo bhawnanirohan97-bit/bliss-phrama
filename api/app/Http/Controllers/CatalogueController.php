@@ -7,6 +7,7 @@ use App\Models\Product;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class CatalogueController extends Controller
@@ -107,5 +108,76 @@ class CatalogueController extends Controller
         };
 
         return back()->with('status', $products->count()." product(s) {$verb}.");
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'category' => ['nullable', 'string', 'max:255'],
+            'strength' => ['nullable', 'string', 'max:100'],
+            'dosage_form' => ['nullable', 'string', 'max:100'],
+            'packaging' => ['nullable', 'string', 'max:100'],
+        ]);
+
+        $baseSlug = Str::slug($validated['name']);
+        $slug = $baseSlug ?: 'prod-' . time();
+        $counter = 1;
+        while (Product::where('slug', $slug)->exists()) {
+            $slug = $baseSlug . '-' . $counter++;
+        }
+
+        $product = Product::create([
+            'name' => $validated['name'],
+            'slug' => $slug,
+            'category' => $validated['category'] ?: 'Pharmaceutical Formulation',
+            'strength' => $validated['strength'] ?? null,
+            'dosage_form' => $validated['dosage_form'] ?? 'Tablet',
+            'packaging' => $validated['packaging'] ?? null,
+            'is_service' => false,
+            'review_status' => ProductReviewStatus::Approved,
+            'reviewed_at' => now(),
+            'search_text' => strtolower($validated['name'] . ' ' . ($validated['strength'] ?? '') . ' ' . ($validated['dosage_form'] ?? '')),
+        ]);
+
+        return back()->with('status', "Product '{$product->name}' added to catalogue and approved for AI buying.");
+    }
+
+    public function destroy(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'slug' => ['required', 'string'],
+        ]);
+
+        $product = Product::where('slug', $validated['slug'])->first();
+        if (! $product) {
+            return back()->withErrors(['product' => 'Product not found.']);
+        }
+
+        $name = $product->name;
+        $product->delete();
+
+        return back()->with('status', "Product '{$name}' permanently removed from catalogue.");
+    }
+
+    public function toggleStatus(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'slug' => ['required', 'string'],
+            'action' => ['required', 'in:block,approve'],
+        ]);
+
+        $product = Product::where('slug', $validated['slug'])->first();
+        if (! $product) {
+            return back()->withErrors(['product' => 'Product not found.']);
+        }
+
+        if ($validated['action'] === 'block') {
+            $product->block();
+            return back()->with('status', "Product '{$product->name}' blocked and removed from AI buying.");
+        } else {
+            $product->approve();
+            return back()->with('status', "Product '{$product->name}' approved for AI buying.");
+        }
     }
 }

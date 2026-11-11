@@ -6,6 +6,7 @@ use App\Enums\LeadStatus;
 use App\Models\AiBotSetting;
 use App\Models\Country;
 use App\Models\Lead;
+use App\Models\Product;
 use App\Services\Policy\AssessmentService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -14,16 +15,49 @@ use Throwable;
 
 class BotSettingController extends Controller
 {
+    public const PRESET_COUNTRIES = [
+        'US' => 'USA (United States)',
+        'GB' => 'UK (United Kingdom)',
+        'AU' => 'Australia',
+        'PH' => 'Philippines',
+        'KR' => 'South Korea',
+        'JP' => 'Japan',
+        'CN' => 'China',
+        'NG' => 'Nigeria',
+        'AE' => 'UAE (United Arab Emirates)',
+        'KE' => 'Kenya',
+        'GH' => 'Ghana',
+        'VN' => 'Vietnam',
+        'DE' => 'Germany',
+        'ZA' => 'South Africa',
+    ];
+
     public function __construct(private readonly AssessmentService $assessments) {}
 
     public function edit(): View
     {
+        $settings = AiBotSetting::current();
+
+        $catalogueProducts = Product::query()
+            ->matchable()
+            ->orderBy('name')
+            ->get(['id', 'slug', 'name', 'category', 'strength', 'dosage_form', 'review_status']);
+
         return view('settings', [
-            'settings' => AiBotSetting::current(),
+            'settings' => $settings,
             'countryRules' => Country::query()->count(),
             'policyVersion' => (string) config('pharmalead.policy_version'),
             'matcherFloor' => (float) config('pharmalead.matcher_floor'),
-            'rejectDomestic' => (bool) config('pharmalead.reject_domestic'),
+            'rejectDomestic' => (bool) ($settings->reject_domestic ?? config('pharmalead.reject_domestic', true)),
+            'presetCountries' => self::PRESET_COUNTRIES,
+            'selectedCountries' => $settings->country_filters ?? [],
+            'targetProducts' => $settings->product_filters ?? [],
+            'catalogueProducts' => $catalogueProducts,
+            'catalogueCounts' => [
+                'total' => Product::query()->matchable()->count(),
+                'approved' => Product::query()->approved()->count(),
+                'blocked' => Product::query()->where('review_status', 'blocked')->count(),
+            ],
         ]);
     }
 
@@ -49,12 +83,90 @@ class BotSettingController extends Controller
         return back()->with('status', $message);
     }
 
+    public function updateCriteria(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'reject_domestic' => ['nullable', 'boolean'],
+            'country_filters' => ['nullable', 'array'],
+            'country_filters.*' => ['string'],
+            'custom_countries' => ['nullable', 'string'],
+        ]);
+
+        $settings = AiBotSetting::current();
+
+        $countries = $validated['country_filters'] ?? [];
+
+        // Parse any custom comma-separated countries
+        if (! empty($validated['custom_countries'])) {
+            $customParts = array_map('trim', explode(',', $validated['custom_countries']));
+            foreach ($customParts as $part) {
+                if ($part !== '') {
+                    $countries[] = strtoupper($part);
+                }
+            }
+        }
+
+        $countries = array_values(array_unique(array_filter($countries)));
+
+        $settings->update([
+            'reject_domestic' => $request->boolean('reject_domestic'),
+            'country_filters' => $countries === [] ? null : $countries,
+        ]);
+
+        return back()->with('status', 'Target export countries and domestic rejection settings updated successfully.');
+    }
+
+    public function addProduct(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'product' => ['required', 'string'],
+        ]);
+
+        $settings = AiBotSetting::current();
+        $current = $settings->product_filters ?? [];
+
+        // Support comma-separated items
+        $parts = array_map('trim', explode(',', $validated['product']));
+        foreach ($parts as $p) {
+            if ($p !== '') {
+                // Avoid case-insensitive duplicates
+                $exists = false;
+                foreach ($current as $existing) {
+                    if (strcasecmp($existing, $p) === 0) {
+                        $exists = true;
+                        break;
+                    }
+                }
+                if (! $exists) {
+                    $current[] = $p;
+                }
+            }
+        }
+
+        $settings->update(['product_filters' => array_values($current)]);
+
+        return back()->with('status', 'Target product(s) added successfully.');
+    }
+
+    public function removeProduct(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'product' => ['required', 'string'],
+        ]);
+
+        $settings = AiBotSetting::current();
+        $current = $settings->product_filters ?? [];
+
+        $target = trim($validated['product']);
+        $current = array_values(array_filter($current, fn ($p) => strcasecmp(trim((string) $p), $target) !== 0));
+
+        $settings->update(['product_filters' => empty($current) ? null : $current]);
+
+        return back()->with('status', "Product '{$target}' removed from target list.");
+    }
+
     /**
      * Switching the bot on is the moment the offline backlog becomes work.
-     *
-     * Leads stored while it was off were deliberately left unprocessed, so they
-     * are released here and scored once rather than waiting for the operator to
-     * open each one by hand.
      */
     private function releaseHeldLeads(): int
     {
@@ -72,8 +184,6 @@ class BotSettingController extends Controller
             try {
                 $this->assessments->assess($lead);
             } catch (Throwable $exception) {
-                // A scoring failure must not strand the whole backlog: the lead
-                // is released and can be reassessed, and the rest still move.
                 report($exception);
             }
         }

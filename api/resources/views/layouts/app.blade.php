@@ -18,12 +18,6 @@
             <a href="{{ route('dashboard') }}" @class(['is-active' => request()->routeIs('dashboard')])>
                 Dashboard
             </a>
-            <a href="{{ route('leads.index') }}" @class(['is-active' => request()->routeIs('leads.*')])>
-                Inbox
-                @if ($navAwaitingCount > 0)
-                    <span class="count">{{ $navAwaitingCount }}</span>
-                @endif
-            </a>
             <a href="{{ route('catalogue.index') }}" @class(['is-active' => request()->routeIs('catalogue.*')])>
                 Catalogue
                 @if ($navUnreviewedCount > 0)

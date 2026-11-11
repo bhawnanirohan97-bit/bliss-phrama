@@ -14,7 +14,7 @@ class AiBotSetting extends Model
      */
     public static function current(): self
     {
-        return self::query()->firstOrCreate([], ['enabled' => false]);
+        return self::query()->firstOrCreate([], ['enabled' => false, 'reject_domestic' => true]);
     }
 
     protected $fillable = [
@@ -33,6 +33,7 @@ class AiBotSetting extends Model
         'only_new_buyers',
         'skip_personal',
         'skip_job_vendor',
+        'reject_domestic',
         'auto_draft',
         'auto_prioritize',
     ];
@@ -49,6 +50,7 @@ class AiBotSetting extends Model
         'only_new_buyers' => 'boolean',
         'skip_personal' => 'boolean',
         'skip_job_vendor' => 'boolean',
+        'reject_domestic' => 'boolean',
         'auto_draft' => 'boolean',
         'auto_prioritize' => 'boolean',
         'min_quantity' => 'integer',

@@ -41,6 +41,42 @@
         </div>
     @endif
 
+    <details style="margin-top: 16px; background: rgba(15, 23, 42, 0.4); border: 1px dashed var(--border); border-radius: 8px; padding: 12px 16px;">
+        <summary style="font-weight: 600; cursor: pointer; color: var(--accent);">
+            + Add a Brand New Product to Catalogue
+        </summary>
+        <form method="post" action="{{ route('catalogue.store') }}" style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; align-items: flex-end;">
+            @csrf
+            <div>
+                <label style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 4px;">Medicine Name *</label>
+                <input type="text" name="name" placeholder="e.g. Cefixime 200mg" required style="width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg-card); color: inherit;">
+            </div>
+            <div>
+                <label style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 4px;">Category</label>
+                <input type="text" name="category" placeholder="e.g. Antibiotics" style="width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg-card); color: inherit;">
+            </div>
+            <div>
+                <label style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 4px;">Strength</label>
+                <input type="text" name="strength" placeholder="e.g. 200 mg" style="width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg-card); color: inherit;">
+            </div>
+            <div>
+                <label style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 4px;">Dosage Form</label>
+                <select name="dosage_form" style="width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg-card); color: inherit;">
+                    <option value="Tablet">Tablet</option>
+                    <option value="Capsule">Capsule</option>
+                    <option value="Injection">Injection</option>
+                    <option value="Syrup / Liquid">Syrup / Liquid</option>
+                    <option value="Ointment / Cream">Ointment / Cream</option>
+                    <option value="Drops">Drops</option>
+                    <option value="Inhaler">Inhaler</option>
+                </select>
+            </div>
+            <div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; height: 38px;">Save to Catalogue</button>
+            </div>
+        </form>
+    </details>
+
     <form class="filters" method="get" action="{{ route('catalogue.index') }}" style="margin-top: 16px;">
         <div class="field">
             <label for="q">Search</label>
@@ -139,7 +175,13 @@
                             </span>
                         </td>
                         <td class="nowrap">
-                            <div class="btn-row">
+                            <div class="btn-row" style="align-items: center;">
+                                <form method="post" action="{{ route('settings.products.add') }}" style="display: inline; margin: 0;">
+                                    @csrf
+                                    <input type="hidden" name="product" value="{{ $product->name }}">
+                                    <button class="btn btn-sm btn-ghost" type="submit" title="Add to strict target list">+ Target</button>
+                                </form>
+
                                 @if (! $product->isApproved())
                                     <form method="post" action="{{ route('catalogue.review') }}">
                                         @csrf
@@ -154,9 +196,17 @@
                                         @csrf
                                         <input type="hidden" name="slugs[]" value="{{ $product->slug }}">
                                         <input type="hidden" name="status" value="blocked">
-                                        <button class="btn btn-sm btn-danger" type="submit">Block</button>
+                                        <button class="btn btn-sm btn-danger" type="submit" title="Remove / Block from AI Buying">Block</button>
                                     </form>
                                 @endif
+
+                                <form method="post" action="{{ route('catalogue.destroy') }}" onsubmit="return confirm('Permanently delete {{ addslashes($product->name) }}?');" style="display: inline; margin: 0;">
+                                    @csrf
+                                    <input type="hidden" name="slug" value="{{ $product->slug }}">
+                                    <button class="btn btn-sm" type="submit" title="Permanently delete from database" style="background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 2px 4px;">
+                                        🗑️
+                                    </button>
+                                </form>
                             </div>
                         </td>
                     </tr>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bliss Lead Auto-Buyer</title>
+  <style>
+    :root {
+      --bg: #0b1320;
+      --card: #111c2e;
+      --border: #1e2c42;
+      --text: #e6edf7;
+      --muted: #93a5bf;
+      --accent: #2dd4bf;
+      --green: #34d399;
+      --red: #f87171;
+    }
+    body {
+      width: 360px;
+      margin: 0;
+      padding: 16px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 13px;
+      box-sizing: border-box;
+    }
+    h1 {
+      font-size: 15px;
+      margin: 0 0 4px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .badge {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+    .badge-active { background: #064e3b; color: var(--green); border: 1px solid var(--green); }
+    .badge-paused { background: #451a03; color: #fbbf24; border: 1px solid #fbbf24; }
+    
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .row:last-child { margin-bottom: 0; }
+    
+    .btn {
+      width: 100%;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn:hover { opacity: 0.9; }
+    .btn-toggle-on { background: var(--green); color: #022c22; }
+    .btn-toggle-off { background: var(--red); color: #450a0a; }
+
+    input[type="number"], input[type="text"] {
+      width: 70px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      text-align: right;
+    }
+    input[type="text"] { width: 100%; text-align: left; }
+
+    .logs-box {
+      max-height: 140px;
+      overflow-y: auto;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px;
+      font-family: monospace;
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .log-item { margin-bottom: 4px; word-break: break-word; }
+    .log-success { color: var(--green); }
+    .log-warn { color: #fbbf24; }
+    .log-err { color: var(--red); }
+  </style>
+</head>
+<body>
+  <h1>
+    <span>Bliss AI Auto-Buyer</span>
+    <span id="status-badge" class="badge badge-active">Active</span>
+  </h1>
+  <p style="margin: 0 0 12px; color: var(--muted); font-size: 12px;">Auto-buys matching export leads on IndiaMART.</p>
+
+  <div class="card">
+    <button id="toggle-btn" class="btn btn-toggle-on">Auto-Buyer is RUNNING (Click to Pause)</button>
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <span>Leads bought today:</span>
+      <strong><span id="bought-count">0</span> / <span id="limit-display">10</span></strong>
+    </div>
+    <div class="row">
+      <span>Max leads per day:</span>
+      <input type="number" id="daily-limit" min="1" max="100" value="10">
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="font-weight: 600; margin-bottom: 6px;">Active Export Filters (via Local AI)</div>
+    <div style="font-size: 11px; color: var(--muted); line-height: 1.5;">
+      • <strong>Domestic India:</strong> Automatic Hard Reject<br>
+      • <strong>Target Countries:</strong> Configured in <a href="http://127.0.0.1:8000/settings" target="_blank" style="color:var(--accent);">Settings</a><br>
+      • <strong>Catalogue:</strong> 923 Approved SKUs
+    </div>
+  </div>
+
+  <div style="font-weight: 600; font-size: 12px; margin-bottom: 6px;">Live Activity Log</div>
+  <div id="logs-container" class="logs-box">
+    <div class="log-item">Extension ready. Monitoring IndiaMART...</div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

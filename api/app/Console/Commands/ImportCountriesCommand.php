@@ -24,7 +24,7 @@ class ImportCountriesCommand extends Command
     {
         $path = (string) $this->argument('file');
 
-        if (! is_readable($path)) {
+        if (! is_file($path)) {
             $this->error("Cannot read {$path}.");
 
             return self::FAILURE;

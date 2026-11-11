@@ -6,9 +6,14 @@ use App\Http\Controllers\CatalogueController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DraftController;
 use App\Http\Controllers\LeadController;
+use App\Http\Controllers\MobileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+Route::get('/mobile', [MobileController::class, 'index'])->name('mobile.index');
+Route::post('/mobile/toggle', [MobileController::class, 'toggle'])->name('mobile.toggle');
+Route::post('/mobile/criteria', [MobileController::class, 'updateCriteria'])->name('mobile.criteria');
 
 Route::get('/inbox', [LeadController::class, 'index'])->name('leads.index');
 Route::get('/inbox/{lead}', [LeadController::class, 'show'])->name('leads.show');
@@ -18,11 +23,13 @@ Route::post('/inbox/{lead}/drafts', [DraftController::class, 'regenerate'])->nam
 
 Route::get('/catalogue', [CatalogueController::class, 'index'])->name('catalogue.index');
 Route::post('/catalogue/review', [CatalogueController::class, 'review'])->name('catalogue.review');
+Route::post('/catalogue/add', [CatalogueController::class, 'store'])->name('catalogue.store');
+Route::post('/catalogue/delete', [CatalogueController::class, 'destroy'])->name('catalogue.destroy');
+Route::post('/catalogue/toggle', [CatalogueController::class, 'toggleStatus'])->name('catalogue.toggle');
 
 Route::get('/settings', [BotSettingController::class, 'edit'])->name('settings.edit');
 Route::post('/settings/bot', [BotSettingController::class, 'toggle'])->name('settings.bot');
+Route::post('/settings/criteria', [BotSettingController::class, 'updateCriteria'])->name('settings.criteria');
+Route::post('/settings/products/add', [BotSettingController::class, 'addProduct'])->name('settings.products.add');
+Route::post('/settings/products/remove', [BotSettingController::class, 'removeProduct'])->name('settings.products.remove');
 
-Route::get('/api/ai-bot/settings', [AiBotController::class, 'index']);
-Route::put('/api/ai-bot/settings', [AiBotController::class, 'update']);
-Route::post('/api/ai-bot/toggle', [AiBotController::class, 'toggle']);
-Route::post('/api/ai-bot/evaluate', [AiBotController::class, 'evaluate']);

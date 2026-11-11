@@ -1,0 +1,10 @@
+{
+  "name": "Bliss AI Lead Bot Controller",
+  "short_name": "Bliss AI",
+  "description": "Mobile App to control Bliss Pharmex AI Lead Catcher",
+  "start_url": "/mobile",
+  "display": "standalone",
+  "background_color": "#090d16",
+  "theme_color": "#090d16",
+  "orientation": "portrait"
+}

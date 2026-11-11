@@ -1,0 +1,18 @@
+iso2,name,class,notes
+US,United States,allowed_proven,Target export market
+GB,United Kingdom,allowed_proven,Target export market
+AU,Australia,allowed_proven,Target export market
+PH,Philippines,allowed_proven,Target export market
+KR,South Korea,allowed_proven,Target export market
+JP,Japan,allowed_proven,Target export market
+CN,China,allowed_proven,Target export market
+NG,Nigeria,allowed_proven,Core export destination
+AE,United Arab Emirates,allowed_proven,Core export destination
+KE,Kenya,allowed_proven,East Africa export market
+GH,Ghana,allowed_proven,West Africa export market
+TZ,Tanzania,allowed_proven,East Africa export market
+UG,Uganda,allowed_proven,East Africa export market
+VN,Vietnam,allowed_proven,Southeast Asia export market
+DE,Germany,allowed_proven,European market
+ZA,South Africa,allowed_proven,African market
+IN,India,blocked,Domestic Indian market (export only)
