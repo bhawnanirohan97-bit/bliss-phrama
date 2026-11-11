@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('title', 'Inbox')
+@section('title', 'Purchased Leads')
 
 @section('content')
     <div class="page-head">
         <div>
-            <h1>Inbox</h1>
+            <h1>Purchased Leads</h1>
             <p>
                 Every lead pushed by IndiaMART, newest first. Leads arrive whether the bot is on or off;
                 this list is the record of what was caught.

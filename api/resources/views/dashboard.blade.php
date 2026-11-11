@@ -116,7 +116,6 @@
     <div class="section">
         <div class="section-head">
             <h2>Latest leads</h2>
-            <a class="small" href="{{ route('leads.index') }}">View all</a>
         </div>
 
         <div class="table-wrap">

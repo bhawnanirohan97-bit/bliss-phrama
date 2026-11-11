@@ -11,7 +11,7 @@
     <div class="page-head">
         <div>
             <div class="small" style="margin-bottom: 6px;">
-                <a href="{{ route('leads.index') }}">← Inbox</a>
+                <a href="{{ route('dashboard') }}">← Dashboard</a>
             </div>
             <h1>{{ $lead->displayName() }}</h1>
             <p>
@@ -402,7 +402,7 @@
                         <form method="post" action="{{ route('leads.status', $lead) }}">
                             @csrf
                             <input type="hidden" name="status" value="received">
-                            <button class="btn" type="submit">Release to inbox</button>
+                            <button class="btn" type="submit">Release Lead</button>
                         </form>
                     @endif
 

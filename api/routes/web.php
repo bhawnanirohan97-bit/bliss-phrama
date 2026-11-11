@@ -15,11 +15,11 @@ Route::get('/mobile', [MobileController::class, 'index'])->name('mobile.index');
 Route::post('/mobile/toggle', [MobileController::class, 'toggle'])->name('mobile.toggle');
 Route::post('/mobile/criteria', [MobileController::class, 'updateCriteria'])->name('mobile.criteria');
 
-Route::get('/inbox', [LeadController::class, 'index'])->name('leads.index');
-Route::get('/inbox/{lead}', [LeadController::class, 'show'])->name('leads.show');
-Route::post('/inbox/{lead}/status', [LeadController::class, 'updateStatus'])->name('leads.status');
-Route::post('/inbox/{lead}/assess', [LeadController::class, 'assess'])->name('leads.assess');
-Route::post('/inbox/{lead}/drafts', [DraftController::class, 'regenerate'])->name('leads.drafts.regenerate');
+Route::redirect('/inbox', '/')->name('leads.index');
+Route::get('/leads/{lead}', [LeadController::class, 'show'])->name('leads.show');
+Route::post('/leads/{lead}/status', [LeadController::class, 'updateStatus'])->name('leads.status');
+Route::post('/leads/{lead}/assess', [LeadController::class, 'assess'])->name('leads.assess');
+Route::post('/leads/{lead}/drafts', [DraftController::class, 'regenerate'])->name('leads.drafts.regenerate');
 
 Route::get('/catalogue', [CatalogueController::class, 'index'])->name('catalogue.index');
 Route::post('/catalogue/review', [CatalogueController::class, 'review'])->name('catalogue.review');
