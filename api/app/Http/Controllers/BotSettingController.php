@@ -38,11 +38,6 @@ class BotSettingController extends Controller
     {
         $settings = AiBotSetting::current();
 
-        $catalogueProducts = Product::query()
-            ->matchable()
-            ->orderBy('name')
-            ->get(['id', 'slug', 'name', 'category', 'strength', 'dosage_form', 'review_status']);
-
         return view('settings', [
             'settings' => $settings,
             'countryRules' => Country::query()->count(),
@@ -52,12 +47,6 @@ class BotSettingController extends Controller
             'presetCountries' => self::PRESET_COUNTRIES,
             'selectedCountries' => $settings->country_filters ?? [],
             'targetProducts' => $settings->product_filters ?? [],
-            'catalogueProducts' => $catalogueProducts,
-            'catalogueCounts' => [
-                'total' => Product::query()->matchable()->count(),
-                'approved' => Product::query()->approved()->count(),
-                'blocked' => Product::query()->where('review_status', 'blocked')->count(),
-            ],
         ]);
     }
 
