@@ -10,7 +10,6 @@
         </div>
         <div class="btn-row">
             <a class="btn btn-primary" href="{{ route('settings.edit') }}">AI Settings & Targets</a>
-            <a class="btn btn-ghost" href="{{ route('catalogue.index') }}">Review catalogue</a>
         </div>
     </div>
 
@@ -23,13 +22,6 @@
         </div>
     @endif
 
-    @if ($catalogueCounts['approved'] === 0)
-        <div class="notice" style="margin-bottom: 16px;">
-            <strong>No SKUs are approved yet, so the matcher will find nothing.</strong>
-            Matching only runs against SKUs you have explicitly cleared for export.
-            <a href="{{ route('catalogue.index', ['status' => 'unreviewed']) }}">Start reviewing the catalogue</a>.
-        </div>
-    @endif
 
     @if ($countryRules === 0)
         <div class="notice" style="margin-bottom: 16px;">
@@ -59,32 +51,6 @@
         </div>
     </div>
 
-    <div class="section">
-        <div class="section-head">
-            <h2>Catalogue readiness</h2>
-            <span class="faint small">{{ number_format($catalogueCounts['matchable']) }} matchable SKUs</span>
-        </div>
-        <div class="card">
-            @php
-                $matchable = max($catalogueCounts['matchable'], 1);
-                $approvedPct = round($catalogueCounts['approved'] / $matchable * 100, 1);
-                $blockedPct = round($catalogueCounts['blocked'] / $matchable * 100, 1);
-            @endphp
-
-            <div class="bar" role="img" aria-label="{{ $approvedPct }}% approved, {{ $blockedPct }}% blocked">
-                <span class="approved" style="width: {{ $approvedPct }}%"></span>
-                <span class="blocked" style="width: {{ $blockedPct }}%"></span>
-                <span class="unreviewed" style="width: {{ 100 - $approvedPct - $blockedPct }}%"></span>
-            </div>
-
-            <div class="dl-inline" style="margin-top: 14px;">
-                <span><strong>{{ number_format($catalogueCounts['approved']) }}</strong> approved</span>
-                <span><strong>{{ number_format($catalogueCounts['blocked']) }}</strong> blocked</span>
-                <span><strong>{{ number_format($catalogueCounts['unreviewed']) }}</strong> unreviewed</span>
-                <span><strong>{{ number_format($catalogueCounts['services']) }}</strong> service listings excluded</span>
-            </div>
-        </div>
-    </div>
 
     <div class="section">
         <div class="section-head">

@@ -100,10 +100,8 @@
 
                     @if ($assessment->product)
                         <p class="small" style="margin: 14px 0 0;">
-                            Matched SKU:
-                            <a href="{{ route('catalogue.index', ['q' => $assessment->product->name]) }}">
-                                {{ $assessment->product->name }}
-                            </a>
+                            Matched Product:
+                            <strong>{{ $assessment->product->name }}</strong>
                         </p>
                     @endif
 
@@ -263,7 +261,7 @@
             </div>
 
             <div class="card">
-                <h2>Approved catalogue matches</h2>
+                <h2>Matched Products</h2>
 
                 @forelse ($matches as $match)
                     <div class="match">
@@ -273,9 +271,7 @@
                         </div>
                         <div style="min-width: 0;">
                             <div>
-                                <a href="{{ route('catalogue.index', ['q' => $match->product->name]) }}">
-                                    {{ $match->product->name }}
-                                </a>
+                                <strong>{{ $match->product->name }}</strong>
                             </div>
                             <div class="faint small">
                                 {{ $match->product->category ?? 'Uncategorised' }}
@@ -322,9 +318,7 @@
                                 </div>
                                 <div style="min-width: 0;">
                                     <div>
-                                        <a href="{{ route('catalogue.index', ['q' => $candidate->product->name]) }}">
-                                            {{ $candidate->product->name }}
-                                        </a>
+                                        <strong>{{ $candidate->product->name }}</strong>
                                     </div>
                                     <div class="faint small">
                                         {{ $candidate->product->category ?? 'Uncategorised' }}

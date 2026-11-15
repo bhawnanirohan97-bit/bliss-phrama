@@ -12,51 +12,9 @@ use Illuminate\Validation\Rule;
 
 class CatalogueController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request): RedirectResponse
     {
-        $status = $request->string('status')->toString();
-        $category = $request->string('category')->toString();
-        $search = $request->string('q')->trim()->toString();
-
-        $products = Product::query()
-            ->matchable()
-            ->when($status !== '', fn ($query) => $query->where('review_status', $status))
-            ->when($category !== '', fn ($query) => $query->where('category', $category))
-            ->when($search !== '', fn ($query) => $query->where(function ($inner) use ($search) {
-                $like = '%'.$search.'%';
-
-                $inner->where('name', 'like', $like)
-                    ->orWhere('category', 'like', $like)
-                    ->orWhere('strength', 'like', $like);
-            }))
-            ->orderBy('category')
-            ->orderBy('name')
-            ->paginate(50)
-            ->withQueryString();
-
-        $categorySummary = Product::query()
-            ->matchable()
-            ->selectRaw('category, count(*) as total')
-            ->selectRaw("sum(case when review_status = 'approved' then 1 else 0 end) as approved")
-            ->selectRaw("sum(case when review_status = 'blocked' then 1 else 0 end) as blocked")
-            ->groupBy('category')
-            ->orderBy('category')
-            ->get();
-
-        return view('catalogue.index', [
-            'products' => $products,
-            'categorySummary' => $categorySummary,
-            'status' => $status,
-            'category' => $category,
-            'search' => $search,
-            'statuses' => ProductReviewStatus::cases(),
-            'totals' => [
-                'matchable' => Product::query()->matchable()->count(),
-                'approved' => Product::query()->approved()->count(),
-                'blocked' => Product::query()->where('review_status', ProductReviewStatus::Blocked->value)->count(),
-                'unreviewed' => Product::query()->where('review_status', ProductReviewStatus::Unreviewed->value)->count(),
-            ],
-        ]);
+        return redirect()->route('dashboard');
     }
 
     /**

@@ -21,11 +21,7 @@ Route::post('/leads/{lead}/status', [LeadController::class, 'updateStatus'])->na
 Route::post('/leads/{lead}/assess', [LeadController::class, 'assess'])->name('leads.assess');
 Route::post('/leads/{lead}/drafts', [DraftController::class, 'regenerate'])->name('leads.drafts.regenerate');
 
-Route::get('/catalogue', [CatalogueController::class, 'index'])->name('catalogue.index');
-Route::post('/catalogue/review', [CatalogueController::class, 'review'])->name('catalogue.review');
-Route::post('/catalogue/add', [CatalogueController::class, 'store'])->name('catalogue.store');
-Route::post('/catalogue/delete', [CatalogueController::class, 'destroy'])->name('catalogue.destroy');
-Route::post('/catalogue/toggle', [CatalogueController::class, 'toggleStatus'])->name('catalogue.toggle');
+Route::redirect('/catalogue', '/')->name('catalogue.index');
 
 Route::get('/settings', [BotSettingController::class, 'edit'])->name('settings.edit');
 Route::post('/settings/bot', [BotSettingController::class, 'toggle'])->name('settings.bot');

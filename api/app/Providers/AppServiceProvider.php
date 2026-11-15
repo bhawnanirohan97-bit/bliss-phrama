@@ -30,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
         View::composer('layouts.app', function ($view): void {
             $view->with([
                 'navAwaitingCount' => Lead::query()->awaitingWork()->actionable()->count(),
-                'navUnreviewedCount' => Product::query()->matchable()->where('review_status', ProductReviewStatus::Unreviewed->value)->count(),
+                'navUnreviewedCount' => 0,
                 'navBotEnabled' => AiBotSetting::current()->enabled,
             ]);
         });

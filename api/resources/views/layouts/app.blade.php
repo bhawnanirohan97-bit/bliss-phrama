@@ -18,12 +18,6 @@
             <a href="{{ route('dashboard') }}" @class(['is-active' => request()->routeIs('dashboard')])>
                 Dashboard
             </a>
-            <a href="{{ route('catalogue.index') }}" @class(['is-active' => request()->routeIs('catalogue.*')])>
-                Catalogue
-                @if ($navUnreviewedCount > 0)
-                    <span class="count">{{ $navUnreviewedCount }}</span>
-                @endif
-            </a>
             <a href="{{ route('settings.edit') }}" @class(['is-active' => request()->routeIs('settings.*')])>
                 Settings
             </a>

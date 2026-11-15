@@ -628,7 +628,7 @@
             </div>
         @else
             <div style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.5; padding: 4px 0;">
-                All 923 catalogue medicines allowed. Add specific medicines above if you want AI to only buy leads for certain products.
+                All medicines allowed. Add specific medicines above if you want AI to only buy leads for certain products.
             </div>
         @endif
     </section>
@@ -684,9 +684,9 @@
             <span class="nav-icon">📱</span>
             <span>Remote</span>
         </a>
-        <a href="/catalogue" class="nav-item">
-            <span class="nav-icon">💊</span>
-            <span>Catalogue</span>
+        <a href="/" class="nav-item">
+            <span class="nav-icon">📊</span>
+            <span>Dashboard</span>
         </a>
         <a href="/settings" class="nav-item">
             <span class="nav-icon">⚙️</span>
