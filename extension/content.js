@@ -77,7 +77,7 @@
   function extractLeadData(card) {
     const text = card.innerText || '';
 
-    const titleEl = card.querySelector('h2, h3, h4, .lead-title, .prod_name, strong, a[href*="blp"]');
+    const titleEl = card.querySelector('.bld_pname, .bld_title, .prod_name, .prod-name, [class*="pname"], h2, h3, h4, .lead-title, a[href*="blp"], strong');
     const product = titleEl ? titleEl.innerText.trim() : '';
 
     let quantity = null;
@@ -86,14 +86,17 @@
       quantity = qtyMatch[1].replace(/,/g, '');
     }
 
-    const locationEl = card.querySelector('.location, .city, .country, .buyer-loc, [class*="loc"]');
-    const locationText = locationEl ? locationEl.innerText.trim() : text;
+    const countryEl = card.querySelector('.cntry_name, .country, [class*="country"], [class*="cntry"], .flag, img[alt*="flag"]');
+    const locationEl = card.querySelector('.bld_loc, .loc_txt, .location, .city, .buyer-loc, [class*="loc"]');
+    const countryText = countryEl ? (countryEl.innerText || countryEl.getAttribute('title') || countryEl.getAttribute('alt') || '').trim() : '';
+    const locationText = (locationEl ? locationEl.innerText.trim() : '') + (countryText ? ' ' + countryText : '');
 
     return {
       product_name: product,
-      inquiry_text: text.slice(0, 500),
+      inquiry_text: text.slice(0, 800),
       quantity: quantity,
-      location_text: locationText.slice(0, 150)
+      country: countryText,
+      location_text: (locationText || text).slice(0, 200)
     };
   }
 
@@ -229,7 +232,9 @@
           }
 
           if (response.shouldBuy) {
-            badge.innerText = '✅ Bliss AI: MATCHED TARGET EXPORT — BUYING & AUTO-SENDING!';
+            const countryBadge = response.matchedCountry ? `Country: ${response.matchedCountry}` : 'Export';
+            const prodBadge = response.matchedProduct ? `Product: ${response.matchedProduct}` : 'Target Medicine';
+            badge.innerText = `✅ Bliss AI: MATCHED (${countryBadge} | ${prodBadge}) — BUYING & AUTO-SENDING!`;
             badge.style.background = '#065f46';
             badge.style.color = '#34d399';
             card.style.border = '2px solid #34d399';
@@ -240,7 +245,7 @@
             button.click();
 
             // 2. Start fully automated OK confirmation and Send Message handler
-            autoConfirmAndSendMessage(leadData.product_name || leadData.product);
+            autoConfirmAndSendMessage(response.matchedProduct || leadData.product_name || leadData.product);
 
             // 3. Notify background worker immediately to record lead in dashboard
             chrome.runtime.sendMessage({ action: 'LEAD_BOUGHT', leadData }, (boughtRes) => {

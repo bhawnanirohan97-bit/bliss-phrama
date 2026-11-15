@@ -79,12 +79,16 @@ async function handleEvaluateLead(leadData) {
       return {
         shouldBuy: true,
         reason: 'AI Approved',
+        matchedCountry: result.matchedCountry || null,
+        matchedProduct: result.matchedProduct || null,
         matches: result.matches || []
       };
     } else {
       return {
         shouldBuy: false,
         reason: result.reason || 'AI Rejected (Did not match criteria)',
+        matchedCountry: result.matchedCountry || null,
+        matchedProduct: result.matchedProduct || null,
         matches: result.matches || []
       };
     }

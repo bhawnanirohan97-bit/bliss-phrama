@@ -277,15 +277,15 @@ class AiBotController extends Controller
         }
 
         // 3. Multi-Country Target Filtering
-        if (! empty($settings->country_filters)) {
-            $resolvedCountry = $this->resolveLeadCountry($lead, $inquiry);
+        $resolvedCountry = $this->resolveLeadCountry($lead, $inquiry);
 
+        if (! empty($settings->country_filters)) {
             if ($resolvedCountry === null) {
                 return [
                     'eligible' => false,
-                    'reason' => 'Destination country is unknown and does not match target country list',
+                    'reason' => 'Destination country is unknown and does not match your allowed export countries',
                     'matches' => [
-                        ['type' => 'warning', 'message' => 'Destination country could not be identified'],
+                        ['type' => 'warning', 'message' => 'Destination country could not be identified from lead card'],
                     ],
                 ];
             }
@@ -293,7 +293,7 @@ class AiBotController extends Controller
             if (! $this->matchesAllowedCountries($resolvedCountry, $settings->country_filters)) {
                 return [
                     'eligible' => false,
-                    'reason' => "Destination country '{$resolvedCountry}' is not in your allowed target countries: " . implode(', ', $settings->country_filters),
+                    'reason' => "Destination country '{$resolvedCountry}' does not match your allowed target countries: " . implode(', ', $settings->country_filters),
                     'matches' => [
                         ['type' => 'warning', 'message' => "Country '{$resolvedCountry}' does not match allowed countries: " . implode(', ', $settings->country_filters)],
                     ],
@@ -303,15 +303,19 @@ class AiBotController extends Controller
             $matches[] = ['type' => 'ok', 'message' => "Destination '{$resolvedCountry}' matches target country list"];
         }
 
-        // 4. Target Products / Medicines Filter
-        if (! empty($settings->product_filters)) {
-            $productName = strtolower((string) ($lead['product_name'] ?? $lead['product'] ?? ''));
-            $matchedProduct = false;
-            $matchedItem = null;
+        // 4. Target Products / Medicines Filter (Must match target products from Settings)
+        $productName = strtolower((string) ($lead['product_name'] ?? $lead['product'] ?? $lead['QUERY_PRODUCT_NAME'] ?? ''));
+        $matchedProduct = false;
+        $matchedItem = null;
 
+        if (! empty($settings->product_filters)) {
             foreach ($settings->product_filters as $filter) {
                 $cleanFilter = strtolower(trim((string) $filter));
-                if ($cleanFilter !== '' && (str_contains($inquiry, $cleanFilter) || str_contains($productName, $cleanFilter))) {
+                if ($cleanFilter === '') {
+                    continue;
+                }
+
+                if (str_contains($productName, $cleanFilter) || str_contains($inquiry, $cleanFilter)) {
                     $matchedProduct = true;
                     $matchedItem = $filter;
                     break;
@@ -319,16 +323,12 @@ class AiBotController extends Controller
             }
 
             if (! $matchedProduct) {
-                $allowedPreview = implode(', ', array_slice($settings->product_filters, 0, 5));
-                if (count($settings->product_filters) > 5) {
-                    $allowedPreview .= '...';
-                }
-
+                $displayProd = $productName !== '' ? $productName : 'Unspecified';
                 return [
                     'eligible' => false,
-                    'reason' => "Product does not match your allowed target products: {$allowedPreview}",
+                    'reason' => "Product '{$displayProd}' does not match any of your active target products in settings",
                     'matches' => [
-                        ['type' => 'warning', 'message' => "Inquiry does not match allowed target products ({$allowedPreview})"],
+                        ['type' => 'warning', 'message' => "Product '{$displayProd}' did not match any of your target products in Settings"],
                     ],
                 ];
             }
@@ -370,7 +370,12 @@ class AiBotController extends Controller
 
         $matches[] = ['type' => 'ok', 'message' => 'Lead meets AI bot criteria'];
 
-        return ['eligible' => true, 'matches' => $matches];
+        return [
+            'eligible' => true,
+            'matches' => $matches,
+            'matchedCountry' => $resolvedCountry,
+            'matchedProduct' => $matchedItem,
+        ];
     }
 
     /**
@@ -400,7 +405,26 @@ class AiBotController extends Controller
             }
         }
 
-        // 2. City / State checks
+        // 2. City / State / Location text checks
+        $locationRaw = strtolower((string) ($lead['location_text'] ?? $lead['location'] ?? ''));
+        if ($locationRaw !== '') {
+            if (str_contains($locationRaw, 'india') || str_contains($locationRaw, '+91')) {
+                $foreignCountry = $this->resolveLeadCountry($lead, $inquiry);
+                if ($foreignCountry === null || $foreignCountry === 'IN') {
+                    return true;
+                }
+            }
+
+            foreach (self::INDIAN_LOCATIONS as $indianLoc) {
+                if (preg_match('/\b' . preg_quote($indianLoc, '/') . '\b/i', $locationRaw)) {
+                    $foreignCountry = $this->resolveLeadCountry($lead, $inquiry);
+                    if ($foreignCountry === null || $foreignCountry === 'IN') {
+                        return true;
+                    }
+                }
+            }
+        }
+
         $cityFields = [
             $lead['city'] ?? null,
             $lead['sender_city'] ?? null,
@@ -475,11 +499,13 @@ class AiBotController extends Controller
             }
         }
 
-        // Check inquiry text for country names or major cities
-        $normalizedInquiry = ' ' . preg_replace('/[^a-z0-9]+/i', ' ', $inquiry) . ' ';
+        // Check inquiry text & location text for country names or major foreign cities
+        $locationText = (string) ($lead['location_text'] ?? $lead['location'] ?? '');
+        $combinedText = $locationText . ' ' . $inquiry;
+        $normalizedText = ' ' . strtolower((string) preg_replace('/[^a-z0-9]+/i', ' ', $combinedText)) . ' ';
 
         foreach (self::COUNTRY_MAP as $name => $iso) {
-            if (strlen($name) >= 3 && str_contains($normalizedInquiry, ' ' . $name . ' ')) {
+            if (strlen($name) >= 2 && str_contains($normalizedText, ' ' . $name . ' ')) {
                 return $iso;
             }
         }
