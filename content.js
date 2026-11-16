@@ -1,17 +1,17 @@
-// Bliss Pharmex - IndiaMART Lead Auto-Buyer Content Script (v1.1.0)
+// Bliss Pharmex - IndiaMART Lead Auto-Buyer Content Script (v1.2.0)
 // Autonomous Buying for Target Export Countries & Target Medicines Only
 
 (function () {
   'use strict';
 
-  console.log('[Bliss Auto-Buyer] Content script loaded on IndiaMART with strict country & target product evaluation.');
+  console.log('[Bliss Auto-Buyer v1.2.0] Initialized on IndiaMART.');
 
-  // 1. Auto-approve native browser confirm and alert dialogs (e.g. "Buy this lead for 1 credit?")
+  // Auto-approve native browser confirm and alert dialogs (e.g. "Buy this lead for 1 credit?")
   try {
     const script = document.createElement('script');
     script.textContent = `
-      window.confirm = function() { console.log('[Bliss AI] Auto-approved native confirm dialog'); return true; };
-      window.alert = function() { console.log('[Bliss AI] Auto-closed native alert'); return true; };
+      window.confirm = function(msg) { console.log('[Bliss AI] Auto-approved native confirm:', msg); return true; };
+      window.alert = function(msg) { console.log('[Bliss AI] Auto-closed native alert:', msg); return true; };
     `;
     (document.head || document.documentElement).appendChild(script);
     script.remove();
@@ -19,6 +19,8 @@
 
   const processedCards = new WeakSet();
   let statusBanner = null;
+  let detectedCardsCount = 0;
+  let lastActionMsg = 'Scanning for leads...';
 
   function triggerClick(el) {
     if (!el) return;
@@ -41,8 +43,8 @@
     } catch (e) {}
   }
 
-  // Create or update on-screen HUD badge in bottom right corner
-  function updateHud(boughtCount = 0, limit = 100, isRunning = true, serverStatus = 'Connected') {
+  // Floating On-Screen HUD in bottom-right corner with live diagnostics
+  function updateHud(boughtCount = 0, limit = 100, isRunning = true) {
     if (!statusBanner) {
       statusBanner = document.createElement('div');
       statusBanner.id = 'bliss-autobuy-hud';
@@ -50,40 +52,52 @@
         position: fixed;
         bottom: 20px;
         right: 20px;
-        background: #0f172a;
+        background: #090d16;
         color: #f1f5f9;
-        padding: 10px 16px;
-        border-radius: 8px;
+        padding: 12px 18px;
+        border-radius: 10px;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         font-size: 13px;
         font-weight: 500;
-        z-index: 9999999;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-        border: 1px solid #334155;
+        z-index: 99999999;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+        border: 1px solid #1e293b;
         display: flex;
-        align-items: center;
-        gap: 12px;
+        flex-direction: column;
+        gap: 6px;
         cursor: pointer;
         user-select: none;
+        max-width: 360px;
       `;
       document.body.appendChild(statusBanner);
 
       statusBanner.addEventListener('click', () => {
-        scanPage(true); // force re-scan on click
+        scanPage(true);
       });
     }
 
     const dotColor = isRunning ? '#10b981' : '#f59e0b';
-    const statusText = isRunning ? 'Auto-Buyer Active' : 'Paused';
+    const statusText = isRunning ? 'Active (Auto-Buy ON)' : 'Paused';
+
     statusBanner.innerHTML = `
-      <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${dotColor};box-shadow:0 0 10px ${dotColor};"></span>
-      <span><strong>Bliss AI:</strong> ${statusText}</span>
-      <span style="background:#1e293b;padding:3px 8px;border-radius:4px;font-size:11px;color:#94a3b8;">Bought: ${boughtCount}/${limit}</span>
-      <span style="font-size:11px;color:#38bdf8;text-decoration:underline;">Click to Re-scan</span>
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${dotColor};box-shadow:0 0 10px ${dotColor};"></span>
+          <span style="font-weight:600;color:#fff;">Bliss AI: ${statusText}</span>
+        </div>
+        <span style="background:#1e293b;padding:2px 8px;border-radius:4px;font-size:11px;color:#94a3b8;">Bought: ${boughtCount}/${limit}</span>
+      </div>
+      <div style="font-size:11px;color:#94a3b8;display:flex;justify-content:space-between;gap:8px;border-top:1px solid #1e293b;padding-top:4px;">
+        <span>Leads on Screen: <strong style="color:#e2e8f0;">${detectedCardsCount}</strong></span>
+        <span style="color:#38bdf8;text-decoration:underline;">Click to Re-scan</span>
+      </div>
+      <div style="font-size:11px;color:#cbd5e1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${lastActionMsg}">
+        Status: ${lastActionMsg}
+      </div>
     `;
   }
 
-  // Helper to reliably find the entire card container
+  // Traverses up to reliably locate the entire card container
   function findCardElement(btn) {
     const directMatch = btn.closest(
       '.bl_card, .bld_card, .blp_card, .glp_card, .listing-card, .listing-item, [id*="bl_"], [id*="lead"], [class*="bld_"], [class*="lead"], li.card, li'
@@ -95,9 +109,9 @@
     let current = btn.parentElement;
     let fallback = null;
     while (current && current !== document.body && current !== document.documentElement) {
-      const hasTitle = current.querySelector('h1, h2, h3, h4, [class*="pname"], [class*="title"], [class*="prod"]');
+      const hasTitle = current.querySelector('h1, h2, h3, h4, [class*="pname"], [class*="title"], [class*="prod"], [class*="desc"]');
       const text = (current.innerText || '').trim();
-      if (hasTitle && text.length > 50) {
+      if (hasTitle && text.length > 40) {
         fallback = current;
         if (current.parentElement && current.parentElement.children.length === 1 && current.parentElement !== document.body) {
           return current.parentElement;
@@ -112,12 +126,18 @@
 
   // Find candidate BuyLead cards and action buttons on IndiaMART
   function findLeadCards() {
-    const candidateButtons = Array.from(document.querySelectorAll(
-      'button, a, input[type="button"], input[type="submit"], [role="button"], div[class*="btn"], span[class*="btn"], div[id*="btn"], [class*="contact"], [id*="contact"], [class*="buy"], [id*="buy"]'
-    )).filter(el => {
+    // 1. Broad selector to catch buttons whether they are <button>, <a>, <div>, or <span>
+    const allClickables = Array.from(document.querySelectorAll(
+      'button, a, input[type="button"], input[type="submit"], [role="button"], div[class*="btn"], span[class*="btn"], div[id*="btn"], [class*="contact"], [id*="contact"], [class*="buy"], [id*="buy"], [class*="quotation"], [class*="reply"]'
+    ));
+
+    const candidateButtons = allClickables.filter(el => {
+      // Must be rendered and visible
       if (el.offsetParent === null && window.getComputedStyle(el).display === 'none') return false;
-      const text = (el.innerText || el.value || el.getAttribute('title') || '').trim().toLowerCase();
-      if (text.length > 60 || text.length < 2) return false;
+
+      const text = (el.innerText || el.value || el.getAttribute('title') || el.getAttribute('aria-label') || '').trim().toLowerCase();
+      if (text.length > 70 || text.length < 2) return false;
+
       return (
         text.includes('contact buyer') ||
         text.includes('contact now') ||
@@ -126,20 +146,21 @@
         text.includes('buy lead') ||
         text.includes('connect now') ||
         text.includes('reply now') ||
+        text.includes('send reply') ||
         text === 'contact' ||
-        text === 'reply' ||
-        text.includes('send reply')
+        text === 'reply'
       );
     });
 
     const results = [];
     candidateButtons.forEach(btn => {
       const card = findCardElement(btn);
-      if (card && !processedCards.has(card)) {
+      if (card) {
         results.push({ card, button: btn });
       }
     });
 
+    detectedCardsCount = results.length;
     return results;
   }
 
@@ -194,7 +215,7 @@
       product_name: product,
       country: countryText,
       location_text: (locationText ? locationText + ' ' + countryText : fullText.slice(0, 300)),
-      inquiry_text: fullText.slice(0, 1200),
+      inquiry_text: fullText.slice(0, 1500),
       quantity: quantity
     };
   }
@@ -215,7 +236,7 @@
         return;
       }
 
-      // 1. Look for active modals or overlays
+      // Look for active modals or overlays
       const containers = Array.from(document.querySelectorAll(
         '.modal, .popup, .dialog, .ui-dialog, div[class*="popup"], div[class*="modal"], div[id*="popup"], div[id*="modal"], div[class*="dialog"], div[id*="contact"], div[class*="contact"]'
       )).filter(el => {
@@ -322,38 +343,47 @@
 
         const leadData = extractLeadData(card);
 
-        // Visual pending evaluation badge
+        // Put badge directly right next to or above the button so user can clearly see it!
         let badge = card.querySelector('.bliss-eval-badge');
         if (!badge) {
           badge = document.createElement('div');
           badge.className = 'bliss-eval-badge';
-          badge.style.cssText = 'padding:6px 10px;margin:8px 0;border-radius:6px;font-size:12px;font-weight:600;display:block;line-height:1.4;';
-          card.prepend(badge);
+          badge.style.cssText = 'padding:6px 10px;margin:6px 0;border-radius:6px;font-size:12px;font-weight:600;display:block;line-height:1.4;';
+          if (button.parentElement) {
+            button.parentElement.insertBefore(badge, button);
+          } else {
+            card.prepend(badge);
+          }
         }
 
-        badge.innerText = '🔍 Bliss AI: Evaluating against your target country & medicines...';
+        badge.innerText = '🔍 Bliss AI: Evaluating lead criteria...';
         badge.style.background = '#0f172a';
         badge.style.color = '#94a3b8';
         badge.style.border = '1px solid #334155';
 
         chrome.runtime.sendMessage({ action: 'EVALUATE_LEAD', leadData }, async (response) => {
           if (!response) {
-            badge.innerText = '⚠️ Bliss AI: No response from local server (Make sure http://localhost:8000 is running)';
+            badge.innerText = '⚠️ Bliss AI: Cannot connect to http://localhost:8000';
             badge.style.background = '#450a0a';
             badge.style.color = '#f87171';
             badge.style.border = '1px solid #7f1d1d';
+            lastActionMsg = 'Error: Cannot reach http://localhost:8000';
+            updateHud(boughtCount, dailyLimit, isRunning);
             return;
           }
 
           if (response.shouldBuy) {
             const countryBadge = response.matchedCountry ? `Country: ${response.matchedCountry}` : 'Target Export';
             const prodBadge = response.matchedProduct ? `Product: ${response.matchedProduct}` : 'Target Medicine';
-            badge.innerText = `✅ Bliss AI: MATCHED (${countryBadge} | ${prodBadge}) — AUTO-BUYING & SENDING PROPOSAL!`;
+            badge.innerText = `✅ Bliss AI: MATCHED (${countryBadge} | ${prodBadge}) — AUTO-BUYING NOW!`;
             badge.style.background = '#064e3b';
             badge.style.color = '#34d399';
             badge.style.border = '1px solid #059669';
             card.style.border = '2px solid #10b981';
             card.style.boxShadow = '0 0 16px rgba(16,185,129,0.3)';
+
+            lastActionMsg = `Buying lead: ${response.matchedProduct} (${response.matchedCountry})`;
+            updateHud(boughtCount, dailyLimit, isRunning);
 
             // 1. Trigger purchase click
             console.log('[Bliss Auto-Buyer] Purchasing lead:', leadData);
@@ -388,6 +418,9 @@
             badge.style.color = '#94a3b8';
             badge.style.border = '1px solid #334155';
             card.style.opacity = '0.65';
+
+            lastActionMsg = `Skipped: ${response.reason}`;
+            updateHud(boughtCount, dailyLimit, isRunning);
           }
         });
       }
