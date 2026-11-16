@@ -4,18 +4,7 @@
 (function () {
   'use strict';
 
-  console.log('[Bliss Auto-Buyer v1.2.0] Initialized on IndiaMART.');
-
-  // Auto-approve native browser confirm and alert dialogs (e.g. "Buy this lead for 1 credit?")
-  try {
-    const script = document.createElement('script');
-    script.textContent = `
-      window.confirm = function(msg) { console.log('[Bliss AI] Auto-approved native confirm:', msg); return true; };
-      window.alert = function(msg) { console.log('[Bliss AI] Auto-closed native alert:', msg); return true; };
-    `;
-    (document.head || document.documentElement).appendChild(script);
-    script.remove();
-  } catch (e) {}
+  console.log('[Bliss Auto-Buyer v1.2.1] Initialized on IndiaMART.');
 
   const processedCards = new WeakSet();
   let statusBanner = null;
