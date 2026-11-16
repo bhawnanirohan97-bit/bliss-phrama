@@ -1,5 +1,4 @@
 // Popup controller for Bliss Lead Auto-Buyer
-
 document.addEventListener('DOMContentLoaded', async () => {
   const toggleBtn = document.getElementById('toggle-btn');
   const statusBadge = document.getElementById('status-badge');
@@ -7,6 +6,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const limitDisplay = document.getElementById('limit-display');
   const dailyLimitInput = document.getElementById('daily-limit');
   const logsContainer = document.getElementById('logs-container');
+  const resetCountBtn = document.getElementById('reset-count-btn');
+  const clearLogsBtn = document.getElementById('clear-logs-btn');
 
   // Load state from chrome.storage
   chrome.storage.local.get(['autoBuyEnabled', 'boughtCount', 'dailyLimit', 'logs'], (data) => {
@@ -32,6 +33,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
+  // Reset count button
+  if (resetCountBtn) {
+    resetCountBtn.addEventListener('click', () => {
+      chrome.storage.local.set({ boughtCount: 0 }, () => {
+        boughtCountEl.innerText = '0';
+      });
+    });
+  }
+
+  // Clear logs button
+  if (clearLogsBtn) {
+    clearLogsBtn.addEventListener('click', () => {
+      chrome.storage.local.set({ logs: [] }, () => {
+        logsContainer.innerHTML = '<div class="log-item">Log cleared. Ready.</div>';
+      });
+    });
+  }
+
   // Daily limit change
   dailyLimitInput.addEventListener('change', () => {
     const val = parseInt(dailyLimitInput.value, 10) || 10;
@@ -55,7 +74,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function renderLogs(logs) {
-    if (!logs || logs.length === 0) return;
+    if (!logs || logs.length === 0) {
+      logsContainer.innerHTML = '<div class="log-item">Extension ready. Monitoring IndiaMART...</div>';
+      return;
+    }
     logsContainer.innerHTML = '';
     logs.forEach(item => {
       const div = document.createElement('div');

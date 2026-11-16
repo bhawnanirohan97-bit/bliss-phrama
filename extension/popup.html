@@ -68,6 +68,20 @@
     .btn:hover { opacity: 0.9; }
     .btn-toggle-on { background: var(--green); color: #022c22; }
     .btn-toggle-off { background: var(--red); color: #450a0a; }
+    .btn-sm-reset {
+      background: #1e293b;
+      color: #94a3b8;
+      border: 1px solid #334155;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .btn-sm-reset:hover {
+      background: #334155;
+      color: #f1f5f9;
+    }
 
     input[type="number"], input[type="text"] {
       width: 70px;
@@ -104,7 +118,7 @@
     <span>Bliss AI Auto-Buyer</span>
     <span id="status-badge" class="badge badge-active">Active</span>
   </h1>
-  <p style="margin: 0 0 12px; color: var(--muted); font-size: 12px;">Auto-buys matching export leads on IndiaMART.</p>
+  <p style="margin: 0 0 12px; color: var(--muted); font-size: 12px;">Auto-buys verified export leads on IndiaMART.</p>
 
   <div class="card">
     <button id="toggle-btn" class="btn btn-toggle-on">Auto-Buyer is RUNNING (Click to Pause)</button>
@@ -113,7 +127,10 @@
   <div class="card">
     <div class="row">
       <span>Leads bought today:</span>
-      <strong><span id="bought-count">0</span> / <span id="limit-display">10</span></strong>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <strong><span id="bought-count">0</span> / <span id="limit-display">10</span></strong>
+        <button id="reset-count-btn" class="btn-sm-reset" title="Reset counter to 0">Reset</button>
+      </div>
     </div>
     <div class="row">
       <span>Max leads per day:</span>
@@ -122,15 +139,18 @@
   </div>
 
   <div class="card">
-    <div style="font-weight: 600; margin-bottom: 6px;">Active Export Filters (via Local AI)</div>
+    <div style="font-weight: 600; margin-bottom: 6px;">Active Export Criteria</div>
     <div style="font-size: 11px; color: var(--muted); line-height: 1.5;">
       • <strong>Domestic India:</strong> Automatic Hard Reject<br>
       • <strong>Target Countries:</strong> Configured in <a href="http://127.0.0.1:8000/settings" target="_blank" style="color:var(--accent);">Settings</a><br>
-      • <strong>Catalogue:</strong> 923 Approved SKUs
+      • <strong>Products:</strong> 499 Approved Target Formulations
     </div>
   </div>
 
-  <div style="font-weight: 600; font-size: 12px; margin-bottom: 6px;">Live Activity Log</div>
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+    <div style="font-weight: 600; font-size: 12px;">Live Activity Log</div>
+    <button id="clear-logs-btn" class="btn-sm-reset" style="padding: 2px 8px; font-size: 10px;">Clear Log</button>
+  </div>
   <div id="logs-container" class="logs-box">
     <div class="log-item">Extension ready. Monitoring IndiaMART...</div>
   </div>
