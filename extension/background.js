@@ -6,7 +6,7 @@ chrome.runtime.onInstalled.addListener(() => {
     const defaults = {
       autoBuyEnabled: true,
       apiUrl: 'http://127.0.0.1:8000/api/ai-bot/evaluate',
-      dailyLimit: 10,
+      dailyLimit: 100,
       boughtCount: 0,
       lastDate: today,
       logs: []
