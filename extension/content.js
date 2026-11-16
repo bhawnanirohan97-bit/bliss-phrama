@@ -1,25 +1,40 @@
-// Bliss Pharmex - IndiaMART Lead Auto-Buyer Content Script (v1.2.0)
+// Bliss Pharmex - IndiaMART Lead Auto-Buyer Content Script (v1.3.0)
 // Autonomous Buying for Target Export Countries & Target Medicines Only
 
 (function () {
   'use strict';
 
-  console.log('[Bliss Auto-Buyer v1.2.1] Initialized on IndiaMART.');
+  console.log('%c[Bliss Auto-Buyer v1.3.0] Initialized on IndiaMART with Verified Purchase Tracking.', 'color: #10b981; font-weight: bold;');
 
   const processedCards = new WeakSet();
+  const buyingInProgressCards = new WeakSet();
   let statusBanner = null;
   let detectedCardsCount = 0;
   let lastActionMsg = 'Scanning for leads...';
 
+  // Reliable multi-event click trigger
   function triggerClick(el) {
     if (!el) return;
     try { el.focus(); } catch (e) {}
-    try { el.click(); } catch (e) {}
-    try {
-      el.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true, view: window }));
-      el.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, cancelable: true, view: window }));
-      el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
-    } catch (e) {}
+
+    const interactive = el.closest('button, a, input[type="button"], input[type="submit"], [role="button"]') || el;
+    const targets = interactive === el ? [el] : [interactive, el];
+
+    for (const target of targets) {
+      try {
+        const opts = { bubbles: true, cancelable: true, view: window, button: 0, buttons: 1, detail: 1 };
+        target.dispatchEvent(new PointerEvent('pointerdown', opts));
+        target.dispatchEvent(new MouseEvent('mousedown', opts));
+        target.dispatchEvent(new PointerEvent('pointerup', opts));
+        target.dispatchEvent(new MouseEvent('mouseup', opts));
+        target.dispatchEvent(new MouseEvent('click', opts));
+        if (typeof target.click === 'function') {
+          target.click();
+        }
+      } catch (e) {
+        console.warn('[Bliss Auto-Buyer] Error triggering click on element:', e);
+      }
+    }
   }
 
   function fillInput(el, text) {
@@ -56,7 +71,7 @@
         gap: 6px;
         cursor: pointer;
         user-select: none;
-        max-width: 360px;
+        max-width: 380px;
       `;
       document.body.appendChild(statusBanner);
 
@@ -115,9 +130,8 @@
 
   // Find candidate BuyLead cards and action buttons on IndiaMART
   function findLeadCards() {
-    // 1. Broad selector to catch buttons whether they are <button>, <a>, <div>, or <span>
     const allClickables = Array.from(document.querySelectorAll(
-      'button, a, input[type="button"], input[type="submit"], [role="button"], div[class*="btn"], span[class*="btn"], div[id*="btn"], [class*="contact"], [id*="contact"], [class*="buy"], [id*="buy"], [class*="quotation"], [class*="reply"]'
+      'button, a, input[type="button"], input[type="submit"], [role="button"], div[class*="btn"], span[class*="btn"], div[id*="btn"], [class*="contact"], [id*="contact"], [class*="buy"], [id*="buy"], [class*="quotation"], [class*="reply"], .bl_cbtn, .bld_btn'
     ));
 
     const candidateButtons = allClickables.filter(el => {
@@ -127,10 +141,14 @@
       const text = (el.innerText || el.value || el.getAttribute('title') || el.getAttribute('aria-label') || '').trim().toLowerCase();
       if (text.length > 70 || text.length < 2) return false;
 
+      // Skip already bought/viewed buttons
+      if (text.includes('view contact') || text.includes('buyer details') || text.includes('already contacted') || text.includes('contacted')) {
+        return false;
+      }
+
       return (
         text.includes('contact buyer') ||
         text.includes('contact now') ||
-        text.includes('view contact') ||
         text.includes('send quotation') ||
         text.includes('buy lead') ||
         text.includes('connect now') ||
@@ -210,49 +228,92 @@
   }
 
   // Fully Autonomous Modal Confirmation & Auto-Send Message Handler
-  function autoConfirmAndSendMessage(productName) {
+  // Returns a promise that resolves with verification info if the lead purchase succeeds
+  function handleAutonomousPurchase(card, button, productName, onVerified) {
     let attempts = 0;
-    const maxAttempts = 35; // 35 x 250ms = 8.75 seconds
-    let confirmedOk = false;
+    const maxAttempts = 40; // 40 x 250ms = 10 seconds
+    let modalInteracted = false;
     let messageSent = false;
+    let confirmedSuccess = false;
 
-    console.log('[Bliss Auto-Buyer] Monitoring modal popups to auto-confirm & auto-send message...');
+    console.log('[Bliss Auto-Buyer] Monitoring DOM for modal confirmation and purchase completion...');
 
     const timer = setInterval(() => {
       attempts++;
-      if (attempts > maxAttempts) {
+      if (attempts > maxAttempts || confirmedSuccess) {
         clearInterval(timer);
+        if (!confirmedSuccess) {
+          console.warn('[Bliss Auto-Buyer] 10s timeout reached without verified purchase confirmation.');
+        }
         return;
       }
 
-      // Look for active modals or overlays
+      // Check 1: Did the card text or button change to show buyer contact info or "Quotation Sent"?
+      const cardText = (card.innerText || '').trim();
+      const phoneMatch = cardText.match(/(?:\+?91[\s-]?)?[6-9]\d{9}|\+?[1-9]\d{1,3}[\s-]?\(?\d{2,4}\)?[\s-]?\d{3,5}[\s-]?\d{3,5}/);
+      const hasContactRevealed = cardText.toLowerCase().includes('buyer details') ||
+                                cardText.toLowerCase().includes('contact details') ||
+                                cardText.toLowerCase().includes('quotation sent') ||
+                                cardText.toLowerCase().includes('already contacted') ||
+                                (phoneMatch && phoneMatch[0].length >= 8);
+
+      if (hasContactRevealed && !confirmedSuccess) {
+        console.log('[Bliss Auto-Buyer] Verified: Lead purchase confirmed on card DOM! Phone:', phoneMatch ? phoneMatch[0] : 'Revealed');
+        confirmedSuccess = true;
+        clearInterval(timer);
+        onVerified({ phone: phoneMatch ? phoneMatch[0].trim() : null });
+        return;
+      }
+
+      // Check 2: Inspect active modals/popups
       const containers = Array.from(document.querySelectorAll(
-        '.modal, .popup, .dialog, .ui-dialog, div[class*="popup"], div[class*="modal"], div[id*="popup"], div[id*="modal"], div[class*="dialog"], div[id*="contact"], div[class*="contact"]'
+        '.modal, .popup, .dialog, .ui-dialog, div[class*="popup"], div[class*="modal"], div[id*="popup"], div[id*="modal"], div[class*="dialog"], div[id*="contact"], div[class*="contact"], [id*="cb_"], [class*="cb_"], .bld_modal'
       )).filter(el => {
         const style = window.getComputedStyle(el);
         return style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0';
       });
 
-      const targets = containers.length > 0 ? containers : [document.body];
+      const targets = containers.length > 0 ? containers : [];
 
       for (const container of targets) {
-        // A. Auto-click "OK", "Confirm", "Yes", "Proceed", "Contact Now", "Buy Lead"
-        if (!confirmedOk) {
-          const okButtons = Array.from(container.querySelectorAll('button, a, input[type="button"], input[type="submit"], .btn'))
-            .filter(b => {
-              const txt = (b.innerText || b.value || '').trim().toLowerCase();
-              return txt === 'ok' || txt === 'confirm' || txt === 'yes' || txt === 'proceed' || txt === 'contact now' || txt.includes('buy lead') || txt === 'agree' || b.id.includes('ok') || b.className.includes('confirm');
-            });
+        const modalText = (container.innerText || '').toLowerCase();
 
-          for (const btn of okButtons) {
-            console.log('[Bliss Auto-Buyer] Auto-clicking Confirmation/OK:', btn.innerText || btn.value);
-            triggerClick(btn);
-            confirmedOk = true;
-            break;
+        // Check if modal displays success confirmation
+        if (modalText.includes('quotation sent') || modalText.includes('successfully contacted') || modalText.includes('contact details') || modalText.includes('lead consumed')) {
+          console.log('[Bliss Auto-Buyer] Verified: Success message detected inside modal dialog!');
+          confirmedSuccess = true;
+          clearInterval(timer);
+
+          // Auto-close modal after 1 second
+          setTimeout(() => {
+            const closeBtn = container.querySelector('button.close, .close, [class*="close"], [title*="Close"]');
+            if (closeBtn) triggerClick(closeBtn);
+          }, 1000);
+
+          onVerified({});
+          return;
+        }
+
+        // A. Auto-select product radio button if present (IndiaMART requires selecting a catalog product)
+        const radios = Array.from(container.querySelectorAll('input[type="radio"]'));
+        if (radios.length > 0 && !radios.some(r => r.checked)) {
+          const targetRadio = radios[0];
+          console.log('[Bliss Auto-Buyer] Auto-selecting required product option in modal:', targetRadio);
+          targetRadio.checked = true;
+          targetRadio.dispatchEvent(new Event('change', { bubbles: true }));
+          triggerClick(targetRadio);
+        }
+
+        // B. Auto-select dropdown if present
+        const selects = Array.from(container.querySelectorAll('select'));
+        for (const sel of selects) {
+          if (sel.options.length > 1 && sel.selectedIndex <= 0) {
+            sel.selectedIndex = 1;
+            sel.dispatchEvent(new Event('change', { bubbles: true }));
           }
         }
 
-        // B. Look for Message Textarea and fill export proposal if empty
+        // C. Look for Message Textarea and fill export proposal if empty
         const textareas = Array.from(container.querySelectorAll('textarea, input[type="text"][name*="msg"], input[type="text"][placeholder*="message"]'))
           .filter(t => t.offsetParent !== null);
 
@@ -263,7 +324,7 @@
           }
         }
 
-        // C. Auto-check any "Send Quotation" / "Share Contact" checkboxes
+        // D. Auto-check any "Send Quotation" / "Share Contact" checkboxes
         const checkboxes = Array.from(container.querySelectorAll('input[type="checkbox"]'))
           .filter(cb => cb.offsetParent !== null && !cb.checked);
         for (const cb of checkboxes) {
@@ -271,37 +332,31 @@
           cb.dispatchEvent(new Event('change', { bubbles: true }));
         }
 
-        // D. Auto-click "Send", "Send Message", "Send Reply", "Send Quotation", "Submit"
-        if (!messageSent) {
-          const sendButtons = Array.from(container.querySelectorAll('button, a, input[type="button"], input[type="submit"], .btn'))
-            .filter(b => {
-              const txt = (b.innerText || b.value || '').trim().toLowerCase();
-              return (txt === 'send' || txt === 'send message' || txt === 'send reply' || txt === 'submit' || txt === 'send quotation' || txt.includes('send')) && !txt.includes('cancel');
-            });
+        // E. Auto-click Confirm / Submit / Contact Now buttons
+        const actionButtons = Array.from(container.querySelectorAll('button, a, input[type="button"], input[type="submit"], .btn'))
+          .filter(b => {
+            const txt = (b.innerText || b.value || '').trim().toLowerCase();
+            return (
+              txt === 'contact now' ||
+              txt === 'submit' ||
+              txt === 'send' ||
+              txt === 'send quotation' ||
+              txt === 'send reply' ||
+              txt === 'proceed' ||
+              txt === 'ok' ||
+              txt === 'confirm' ||
+              txt === 'yes' ||
+              txt.includes('buy lead') ||
+              b.id.includes('submit') ||
+              b.id.includes('contact')
+            ) && !txt.includes('cancel');
+          });
 
-          for (const btn of sendButtons) {
-            console.log('[Bliss Auto-Buyer] Auto-clicking Send Message:', btn.innerText || btn.value);
-            triggerClick(btn);
-            messageSent = true;
-            break;
-          }
-        }
-
-        // E. Auto-close success modal after sending
-        if (messageSent) {
-          const closeButtons = Array.from(container.querySelectorAll('button, a, .close, [class*="close"]'))
-            .filter(b => {
-              const txt = (b.innerText || b.title || '').trim().toLowerCase();
-              return txt === 'close' || txt === 'got it' || txt === 'done' || txt === '×' || txt === 'x' || b.classList.contains('close');
-            });
-
-          for (const btn of closeButtons) {
-            setTimeout(() => {
-              triggerClick(btn);
-              clearInterval(timer);
-            }, 600);
-            return;
-          }
+        for (const btn of actionButtons) {
+          console.log('[Bliss Auto-Buyer] Auto-clicking modal action button:', btn.innerText || btn.value);
+          triggerClick(btn);
+          modalInteracted = true;
+          break;
         }
       }
     }, 250);
@@ -364,43 +419,56 @@
           if (response.shouldBuy) {
             const countryBadge = response.matchedCountry ? `Country: ${response.matchedCountry}` : 'Target Export';
             const prodBadge = response.matchedProduct ? `Product: ${response.matchedProduct}` : 'Target Medicine';
-            badge.innerText = `✅ Bliss AI: MATCHED (${countryBadge} | ${prodBadge}) — AUTO-BUYING NOW!`;
+
+            if (buyingInProgressCards.has(card)) return;
+            buyingInProgressCards.add(card);
+
+            badge.innerText = `⏳ Bliss AI: MATCHED (${countryBadge} | ${prodBadge}) — Initiating purchase...`;
             badge.style.background = '#064e3b';
             badge.style.color = '#34d399';
             badge.style.border = '1px solid #059669';
             card.style.border = '2px solid #10b981';
             card.style.boxShadow = '0 0 16px rgba(16,185,129,0.3)';
 
-            lastActionMsg = `Buying lead: ${response.matchedProduct} (${response.matchedCountry})`;
+            lastActionMsg = `Clicking lead: ${response.matchedProduct} (${response.matchedCountry})`;
             updateHud(boughtCount, dailyLimit, isRunning);
 
-            // 1. Trigger purchase click
-            console.log('[Bliss Auto-Buyer] Purchasing lead:', leadData);
+            console.log('[Bliss Auto-Buyer] Matched lead approved by AI. Clicking contact button:', button);
             triggerClick(button);
 
-            // 2. Start fully automated OK confirmation and Send Message handler
-            autoConfirmAndSendMessage(response.matchedProduct || leadData.product_name);
-
-            // 3. Notify background worker immediately to record lead in dashboard
-            chrome.runtime.sendMessage({ action: 'LEAD_BOUGHT', leadData: { ...leadData, matchedProduct: response.matchedProduct, matchedCountry: response.matchedCountry } }, (boughtRes) => {
-              chrome.storage.local.get(['boughtCount', 'dailyLimit'], (cfg) => {
-                updateHud(cfg.boughtCount, cfg.dailyLimit, true);
-              });
-            });
-
-            // 4. Capture any revealed phone/buyer name after 2.5 seconds
-            setTimeout(() => {
-              const updatedText = card.innerText || '';
-              const phoneMatch = updatedText.match(/(?:\+?\d{1,4}[-.\s]?)?\(?\d{2,4}\)?[-.\s]?\d{3,5}[-.\s]?\d{3,5}/);
-              const nameEl = card.querySelector('.buyer-name, .sender-name, [class*="name"]');
+            // Handle modal and ONLY count as bought once verified on DOM
+            handleAutonomousPurchase(card, button, response.matchedProduct || leadData.product_name, (verifiedData) => {
               const enrichedData = {
                 ...leadData,
-                phone: phoneMatch ? phoneMatch[0].trim() : null,
-                buyer_name: nameEl ? nameEl.innerText.trim() : null,
+                matchedProduct: response.matchedProduct,
+                matchedCountry: response.matchedCountry,
+                phone: verifiedData.phone || leadData.phone || null
               };
-              chrome.runtime.sendMessage({ action: 'LEAD_BOUGHT', leadData: enrichedData });
-              badge.innerText = `✅ Bliss AI: BOUGHT! (${countryBadge} | ${prodBadge}) — PROPOSAL SENT!`;
-            }, 2500);
+
+              // VERIFIED PURCHASE: Now we safely record the lead and increment the counter
+              chrome.runtime.sendMessage({ action: 'LEAD_BOUGHT', leadData: enrichedData }, (boughtRes) => {
+                chrome.storage.local.get(['boughtCount', 'dailyLimit'], (cfg) => {
+                  updateHud(cfg.boughtCount, cfg.dailyLimit, true);
+                });
+              });
+
+              badge.innerText = `✅ Bliss AI: BOUGHT & VERIFIED! (${countryBadge} | ${prodBadge})`;
+              badge.style.background = '#047857';
+              badge.style.color = '#ffffff';
+              lastActionMsg = `Successfully bought: ${response.matchedProduct}`;
+            });
+
+            // Set a fallback status if 10s elapses without verification
+            setTimeout(() => {
+              if (badge.innerText.includes('Initiating purchase')) {
+                badge.innerText = `⚠️ Bliss AI: MATCHED (${countryBadge} | ${prodBadge}) — Clicked "Contact", but modal/purchase needs manual confirmation.`;
+                badge.style.background = '#78350f';
+                badge.style.color = '#fde68a';
+                badge.style.border = '1px solid #d97706';
+                lastActionMsg = `Awaiting confirmation for: ${response.matchedProduct}`;
+              }
+            }, 10500);
+
           } else {
             badge.innerText = `⛔ Bliss AI: SKIPPED — ${response.reason}`;
             badge.style.background = '#1e293b';
