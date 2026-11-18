@@ -11,3 +11,9 @@ Thumbs.db
 api/.env
 api/.env.*
 !api/.env.example
+
+# Node / Expo dependencies & build artifacts
+node_modules/
+mobile-app/node_modules/
+mobile-app/.expo/
+.expo/
