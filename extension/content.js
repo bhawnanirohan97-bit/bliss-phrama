@@ -213,27 +213,32 @@
     ));
 
     const candidateButtons = allClickables.filter(el => {
-      if (el.offsetParent === null && window.getComputedStyle(el).display === 'none') return false;
+      try {
+        if (el.offsetParent === null && window.getComputedStyle(el).display === 'none') return false;
 
-      const text = (el.innerText || el.value || el.getAttribute('title') || el.getAttribute('aria-label') || '').trim().toLowerCase();
-      if (text.length > 70 || text.length < 2) return false;
+        const rawTxt = (el.innerText || el.value || el.getAttribute('title') || el.getAttribute('aria-label') || '');
+        const text = (typeof rawTxt === 'string' ? rawTxt : String(rawTxt || '')).trim().toLowerCase();
+        if (text.length > 70 || text.length < 2) return false;
 
-      // Skip already bought / revealed buttons
-      if (text.includes('view contact') || text.includes('buyer details') || text.includes('already contacted') || text.includes('contacted')) {
+        // Skip already bought / revealed buttons
+        if (text.includes('view contact') || text.includes('buyer details') || text.includes('already contacted') || text.includes('contacted')) {
+          return false;
+        }
+
+        return (
+          text.includes('contact buyer') ||
+          text.includes('contact now') ||
+          text.includes('send quotation') ||
+          text.includes('buy lead') ||
+          text.includes('connect now') ||
+          text.includes('reply now') ||
+          text.includes('send reply') ||
+          text === 'contact' ||
+          text === 'reply'
+        );
+      } catch (e) {
         return false;
       }
-
-      return (
-        text.includes('contact buyer') ||
-        text.includes('contact now') ||
-        text.includes('send quotation') ||
-        text.includes('buy lead') ||
-        text.includes('connect now') ||
-        text.includes('reply now') ||
-        text.includes('send reply') ||
-        text === 'contact' ||
-        text === 'reply'
-      );
     });
 
     const results = [];
@@ -430,24 +435,35 @@
         }
 
         // E. Auto-click Confirm / Submit / Contact Now buttons
-        const actionButtons = Array.from(container.querySelectorAll('button, a, input[type="button"], input[type="submit"], .btn'))
+        const actionButtons = Array.from(container.querySelectorAll('button, a, input[type="button"], input[type="submit"], .btn, [role="button"]'))
           .filter(b => {
-            const txt = (b.innerText || b.value || '').trim().toLowerCase();
-            return (
-              txt === 'contact buyer now' ||
-              txt === 'contact now' ||
-              txt === 'submit' ||
-              txt === 'send' ||
-              txt === 'send quotation' ||
-              txt === 'send reply' ||
-              txt === 'proceed' ||
-              txt === 'ok' ||
-              txt === 'confirm' ||
-              txt === 'yes' ||
-              txt.includes('buy lead') ||
-              b.id.includes('submit') ||
-              b.id.includes('contact')
-            ) && !txt.includes('cancel');
+            try {
+              const rawTxt = (b.innerText || b.value || b.getAttribute('value') || b.getAttribute('title') || b.getAttribute('aria-label') || '');
+              const txt = (typeof rawTxt === 'string' ? rawTxt : String(rawTxt || '')).trim().toLowerCase();
+
+              const rawId = (b.getAttribute && b.getAttribute('id')) || (typeof b.id === 'string' ? b.id : '');
+              const idLower = String(rawId || '').toLowerCase();
+
+              const matchesText = (
+                txt === 'contact buyer now' ||
+                txt === 'contact now' ||
+                txt === 'submit' ||
+                txt === 'send' ||
+                txt === 'send quotation' ||
+                txt === 'send reply' ||
+                txt === 'proceed' ||
+                txt === 'ok' ||
+                txt === 'confirm' ||
+                txt === 'yes' ||
+                txt.includes('buy lead') ||
+                idLower.includes('submit') ||
+                idLower.includes('contact')
+              );
+
+              return Boolean(matchesText && !txt.includes('cancel') && !txt.includes('close'));
+            } catch (e) {
+              return false;
+            }
           });
 
         for (const btn of actionButtons) {
