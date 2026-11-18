@@ -1,19 +1,20 @@
-// Bliss Pharmex - IndiaMART Lead Auto-Buyer Content Script (v1.3.1)
-// Clean, Non-Intrusive HUD + Verified Buying + Zero Screen Blur / Zero Opacity Dimming
+// Bliss Pharmex - IndiaMART Lead Auto-Buyer Content Script (v1.3.2)
+// Full Dual-World Autonomous Purchase (Content Script + Page JS Context)
+// Strict Filter Matching: Target Export Countries + 499 Approved Medicines Only
 
 (function () {
   'use strict';
 
-  console.log('%c[Bliss Auto-Buyer v1.3.1] Running smoothly on IndiaMART (Non-Intrusive Mode).', 'color: #10b981; font-weight: bold;');
+  console.log('%c[Bliss Auto-Buyer v1.3.2] Autonomous Purchase Engine Active on IndiaMART.', 'color: #10b981; font-weight: bold;');
 
   const processedCards = new WeakSet();
   const buyingInProgressCards = new WeakSet();
   let statusBanner = null;
   let isHudMinimized = false;
   let detectedCardsCount = 0;
-  let lastActionMsg = 'Scanning for leads...';
+  let lastActionMsg = 'Scanning for matching export leads...';
 
-  // Keep page interactive and ensure no background blur or scroll-locking stays on screen
+  // Prevent background blur or overlay freeze
   function clearAnyPageBlurAndUnlock() {
     try {
       if (document.documentElement.style.filter) document.documentElement.style.filter = 'none';
@@ -29,7 +30,6 @@
         }
       }
 
-      // If an orphaned overlay is blocking user interaction without an open modal, unlock it
       const orphanedOverlays = document.querySelectorAll('.gl_overlay, .modal-backdrop:not(.show), div[class*="backdrop"]:not(.show)');
       for (const ov of orphanedOverlays) {
         ov.style.display = 'none';
@@ -38,14 +38,22 @@
     } catch (e) {}
   }
 
-  // Reliable multi-event click trigger
+  // Dual-World Click Trigger: executes in both Isolated World and Page World (with jQuery)
   function triggerClick(el) {
     if (!el) return;
     try { el.focus(); } catch (e) {}
 
     const interactive = el.closest('button, a, input[type="button"], input[type="submit"], [role="button"]') || el;
-    const targets = interactive === el ? [el] : [interactive, el];
+    const targetId = 'bliss_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+    
+    interactive.setAttribute('data-bliss-target', targetId);
+    if (el !== interactive) el.setAttribute('data-bliss-target', targetId);
 
+    // 1. Tell Injected Main World script to trigger jQuery and native click in page scope
+    window.postMessage({ type: 'BLISS_PAGE_CLICK', targetId: targetId }, '*');
+
+    // 2. Trigger synthetic pointer and mouse events in content script scope
+    const targets = interactive === el ? [el] : [interactive, el];
     for (const target of targets) {
       try {
         const opts = { bubbles: true, cancelable: true, view: window, button: 0, buttons: 1, detail: 1 };
@@ -71,7 +79,7 @@
     } catch (e) {}
   }
 
-  // Non-intrusive floating HUD in bottom-right corner with minimize/expand support
+  // Non-intrusive floating HUD in bottom-right corner
   function updateHud(boughtCount = 0, limit = 100, isRunning = true) {
     if (!statusBanner) {
       statusBanner = document.createElement('div');
@@ -94,7 +102,7 @@
         flex-direction: column;
         gap: 5px;
         user-select: none;
-        max-width: 320px;
+        max-width: 330px;
         pointer-events: auto;
       `;
       document.body.appendChild(statusBanner);
@@ -136,7 +144,7 @@
         </div>
       </div>
       <div style="font-size:11px;color:#94a3b8;display:flex;justify-content:space-between;gap:8px;border-top:1px solid #1e293b;padding-top:4px;">
-        <span>On Screen: <strong style="color:#e2e8f0;">${detectedCardsCount}</strong></span>
+        <span>Leads on Screen: <strong style="color:#e2e8f0;">${detectedCardsCount}</strong></span>
         <span id="hud-rescan-btn" style="color:#38bdf8;text-decoration:underline;cursor:pointer;">Re-scan</span>
       </div>
       <div style="font-size:11px;color:#cbd5e1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${lastActionMsg}">
@@ -201,6 +209,7 @@
       const text = (el.innerText || el.value || el.getAttribute('title') || el.getAttribute('aria-label') || '').trim().toLowerCase();
       if (text.length > 70 || text.length < 2) return false;
 
+      // Skip already bought / revealed buttons
       if (text.includes('view contact') || text.includes('buyer details') || text.includes('already contacted') || text.includes('contacted')) {
         return false;
       }
@@ -234,9 +243,9 @@
   function extractLeadData(card) {
     const fullText = (card.innerText || '').trim();
 
-    // 1. Product Name extraction
+    // 1. Product Name extraction from top title/headline
     const titleEl = card.querySelector(
-      '.bld_pname, .prod_name, .prod-name, [class*="pname"], [class*="title"], h2, h3, h4, .lead-title, a[href*="blp"], a[href*="buylead"], strong'
+      'h1, h2, h3, h4, .bld_pname, .prod_name, .prod-name, [class*="pname"], [class*="title"], [class*="prod_heading"], .lead-title, a[href*="blp"], a[href*="buylead"], strong'
     );
     let product = titleEl ? titleEl.innerText.trim() : '';
 
@@ -249,7 +258,7 @@
 
     // 2. Country / Location extraction
     const countryEl = card.querySelector(
-      '.cntry_name, .country, [class*="country"], [class*="cntry"], .flag, img[alt*="flag"], img[src*="flag"], [class*="flag"]'
+      '.cntry_name, .country, [class*="country"], [class*="cntry"]'
     );
     const locationEl = card.querySelector(
       '.bld_loc, .loc_txt, .location, .city, .buyer-loc, [class*="loc"], [class*="city"]'
@@ -257,6 +266,17 @@
 
     let countryText = countryEl ? (countryEl.innerText || countryEl.getAttribute('title') || countryEl.getAttribute('alt') || '').trim() : '';
     let locationText = locationEl ? locationEl.innerText.trim() : '';
+
+    // Check subtitle line near time & flag (e.g. "12 mins ago | Reunion" or "[flag] Reunion")
+    if (!countryText) {
+      const timeOrFlag = card.querySelector('.bld_time, [class*="time"], [class*="flag"], i.flag, span.flag, img[src*="flag"], img[alt*="flag"]');
+      if (timeOrFlag && timeOrFlag.parentElement) {
+        const sublineText = (timeOrFlag.parentElement.innerText || '').replace(/\d+\s*(?:mins?|hours?|days?|secs?)\s*ago/gi, '').replace(/[|•·-]/g, '').trim();
+        if (sublineText.length >= 2 && sublineText.length < 50) {
+          countryText = sublineText;
+        }
+      }
+    }
 
     if (!countryText) {
       const imgs = Array.from(card.querySelectorAll('img'));
@@ -280,7 +300,7 @@
     return {
       product_name: product,
       country: countryText,
-      location_text: (locationText ? locationText + ' ' + countryText : fullText.slice(0, 300)),
+      location_text: (locationText ? locationText + ' ' + countryText : fullText.slice(0, 500)),
       inquiry_text: fullText.slice(0, 1500),
       quantity: quantity
     };
@@ -289,7 +309,7 @@
   // Fully Autonomous Modal Confirmation & Auto-Send Message Handler
   function handleAutonomousPurchase(card, button, productName, onVerified) {
     let attempts = 0;
-    const maxAttempts = 32; // 32 x 250ms = 8 seconds
+    const maxAttempts = 36; // 36 x 250ms = 9 seconds
     let confirmedSuccess = false;
 
     console.log('[Bliss Auto-Buyer] Monitoring DOM for modal confirmation and purchase completion...');
@@ -299,7 +319,6 @@
       if (attempts > maxAttempts || confirmedSuccess) {
         clearInterval(timer);
         if (!confirmedSuccess) {
-          // If modal is still open after 8s and unconfirmed, close it so the page is never locked/blurred
           const openModals = document.querySelectorAll('.modal, .popup, .dialog, div[class*="popup"], div[class*="modal"]');
           for (const m of openModals) {
             const closeBtn = m.querySelector('button.close, .close, [class*="close"], [title*="Close"]');
@@ -310,7 +329,10 @@
         return;
       }
 
-      // Check 1: Did the card text or button change to show buyer contact info or "Quotation Sent"?
+      // 1. Dispatch page-level autonomous modal submit via Injected Main World
+      window.postMessage({ type: 'BLISS_PAGE_SUBMIT_MODAL' }, '*');
+
+      // 2. Check: Did the card change to show buyer contact details or phone number?
       const cardText = (card.innerText || '').trim();
       const phoneMatch = cardText.match(/(?:\+?91[\s-]?)?[6-9]\d{9}|\+?[1-9]\d{1,3}[\s-]?\(?\d{2,4}\)?[\s-]?\d{3,5}[\s-]?\d{3,5}/);
       const hasContactRevealed = cardText.toLowerCase().includes('buyer details') ||
@@ -328,15 +350,15 @@
         return;
       }
 
-      // Check 2: Inspect active modals/popups
+      // 3. Inspect active modals in Content Script
       const containers = Array.from(document.querySelectorAll(
-        '.modal, .popup, .dialog, .ui-dialog, div[class*="popup"], div[class*="modal"], div[id*="popup"], div[id*="modal"], div[class*="dialog"], div[id*="contact"], div[class*="contact"], [id*="cb_"], [class*="cb_"], .bld_modal'
+        '#cb_modal, #cont_buyer_popup, #contact_buyer_popup, #gl_contact_buyer, #bld_modal, .modal, .popup, .dialog, .ui-dialog, div[class*="cb_"], div[id*="cb_"], div[class*="popup"], div[class*="modal"], .bld_modal'
       )).filter(el => {
         const style = window.getComputedStyle(el);
         return style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0';
       });
 
-      for (const container of containers) {
+      for (const container of targets(containers)) {
         const modalText = (container.innerText || '').toLowerCase();
 
         // Check if modal displays success confirmation
@@ -355,13 +377,15 @@
           return;
         }
 
-        // A. Auto-select product radio button if present
-        const radios = Array.from(container.querySelectorAll('input[type="radio"]'));
-        if (radios.length > 0 && !radios.some(r => r.checked)) {
-          const targetRadio = radios[0];
-          targetRadio.checked = true;
-          targetRadio.dispatchEvent(new Event('change', { bubbles: true }));
-          triggerClick(targetRadio);
+        // A. Auto-select product radio button / product option
+        const radios = Array.from(container.querySelectorAll('input[type="radio"], .cb_prod_list li, .prod_list li, [class*="prod_item"]'));
+        if (radios.length > 0) {
+          const first = radios[0];
+          if (first.tagName === 'INPUT' && !radios.some(r => r.checked)) {
+            first.checked = true;
+            first.dispatchEvent(new Event('change', { bubbles: true }));
+          }
+          triggerClick(first);
         }
 
         // B. Auto-select dropdown if present
@@ -397,6 +421,7 @@
           .filter(b => {
             const txt = (b.innerText || b.value || '').trim().toLowerCase();
             return (
+              txt === 'contact buyer now' ||
               txt === 'contact now' ||
               txt === 'submit' ||
               txt === 'send' ||
@@ -418,6 +443,10 @@
         }
       }
     }, 250);
+  }
+
+  function targets(containers) {
+    return containers.length > 0 ? containers : [];
   }
 
   // Scan and evaluate candidate cards
@@ -491,7 +520,7 @@
             lastActionMsg = `Buying: ${response.matchedProduct} (${response.matchedCountry})`;
             updateHud(boughtCount, dailyLimit, isRunning);
 
-            console.log('[Bliss Auto-Buyer] Matched lead approved by AI. Clicking contact button:', button);
+            console.log('[Bliss Auto-Buyer] Matched lead approved by AI. Clicking Contact Buyer Now button:', button);
             triggerClick(button);
 
             handleAutonomousPurchase(card, button, response.matchedProduct || leadData.product_name, (verifiedData) => {
@@ -523,10 +552,9 @@
                 lastActionMsg = `Awaiting confirmation for: ${response.matchedProduct}`;
                 clearAnyPageBlurAndUnlock();
               }
-            }, 8500);
+            }, 9500);
 
           } else {
-            // NOTE: We NEVER change card.style.opacity! Website stays 100% interactive and clear.
             badge.innerText = `⛔ SKIPPED — ${response.reason}`;
             badge.style.background = '#1e293b';
             badge.style.color = '#94a3b8';

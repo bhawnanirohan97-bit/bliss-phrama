@@ -45,6 +45,7 @@ class AiBotController extends Controller
         'ca' => 'CA', 'can' => 'CA', 'canada' => 'CA', 'toronto' => 'CA', 'vancouver' => 'CA',
         'br' => 'BR', 'bra' => 'BR', 'brazil' => 'BR', 'sao paulo' => 'BR',
         'za' => 'ZA', 'zaf' => 'ZA', 'south africa' => 'ZA', 'johannesburg' => 'ZA', 'cape town' => 'ZA',
+        'reunion' => 'RE', 're' => 'RE', 'reu' => 'RE', 'la reunion' => 'RE', 'mauritius' => 'MU', 'mu' => 'MU', 'seychelles' => 'SC', 'sc' => 'SC',
 
         // Domestic India
         'in' => 'IN', 'ind' => 'IN', 'india' => 'IN',
@@ -155,6 +156,14 @@ class AiBotController extends Controller
         $lead = $request->all();
         $result = $this->checkLead($settings, $lead);
 
+        \Illuminate\Support\Facades\Log::info('AI Bot Evaluated Lead', [
+            'product' => $lead['product_name'] ?? $lead['product'] ?? null,
+            'country' => $lead['country'] ?? null,
+            'location' => $lead['location_text'] ?? null,
+            'eligible' => $result['eligible'] ?? false,
+            'reason' => $result['reason'] ?? null,
+        ]);
+
         return response()->json(['enabled' => true] + $result);
     }
 
@@ -187,8 +196,7 @@ class AiBotController extends Controller
 
         $country = (string) ($validated['country'] ?? '');
         $countryIso = $this->canonicalIso2($country)
-            ?? $this->detectCountryFromInquiry($inquiry)
-            ?? $this->detectCountryFromInquiry((string) ($validated['location_text'] ?? ''))
+            ?? $this->resolveLeadCountry($validated, $inquiry)
             ?? 'US';
 
         $source = LeadSource::firstOrCreate(
