@@ -8,11 +8,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   const logsContainer = document.getElementById('logs-container');
   const resetCountBtn = document.getElementById('reset-count-btn');
   const clearLogsBtn = document.getElementById('clear-logs-btn');
+  const autoRefreshToggle = document.getElementById('auto-refresh-toggle');
 
   // Load state from chrome.storage
-  chrome.storage.local.get(['autoBuyEnabled', 'boughtCount', 'dailyLimit', 'logs'], (data) => {
+  chrome.storage.local.get(['autoBuyEnabled', 'autoRefreshEnabled', 'boughtCount', 'dailyLimit', 'logs'], (data) => {
     const isEnabled = data.autoBuyEnabled !== false;
     updateStatusUI(isEnabled);
+
+    const isRefreshOn = data.autoRefreshEnabled !== false;
+    if (autoRefreshToggle) {
+      autoRefreshToggle.checked = isRefreshOn;
+    }
 
     const count = data.boughtCount || 0;
     const limit = data.dailyLimit || 10;
@@ -32,6 +38,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
     });
   });
+
+  // Auto-refresh checkbox toggle
+  if (autoRefreshToggle) {
+    autoRefreshToggle.addEventListener('change', () => {
+      chrome.storage.local.set({ autoRefreshEnabled: autoRefreshToggle.checked });
+    });
+  }
 
   // Reset count button
   if (resetCountBtn) {

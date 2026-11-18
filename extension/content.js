@@ -1,11 +1,11 @@
-// Bliss Pharmex - IndiaMART Lead Auto-Buyer Content Script (v1.3.2)
-// Full Dual-World Autonomous Purchase (Content Script + Page JS Context)
+// Bliss Pharmex - IndiaMART Lead Auto-Buyer Content Script (v1.4.0)
+// Auto-Refresh Every 12-15s + Dual-World Autonomous Buying + Zero Screen Blur
 // Strict Filter Matching: Target Export Countries + 499 Approved Medicines Only
 
 (function () {
   'use strict';
 
-  console.log('%c[Bliss Auto-Buyer v1.3.2] Autonomous Purchase Engine Active on IndiaMART.', 'color: #10b981; font-weight: bold;');
+  console.log('%c[Bliss Auto-Buyer v1.4.0] Autonomous Engine with 12-15s Auto-Refresh Active.', 'color: #10b981; font-weight: bold;');
 
   const processedCards = new WeakSet();
   const buyingInProgressCards = new WeakSet();
@@ -13,6 +13,13 @@
   let isHudMinimized = false;
   let detectedCardsCount = 0;
   let lastActionMsg = 'Scanning for matching export leads...';
+  let isPurchasingActive = false;
+
+  // Auto-refresh interval randomized between 12 and 15 seconds
+  function getRandomInterval() {
+    return Math.floor(Math.random() * (15 - 12 + 1)) + 12;
+  }
+  let refreshCountdown = getRandomInterval();
 
   // Prevent background blur or overlay freeze
   function clearAnyPageBlurAndUnlock() {
@@ -38,7 +45,7 @@
     } catch (e) {}
   }
 
-  // Dual-World Click Trigger: executes in both Isolated World and Page World (with jQuery)
+  // Dual-World Click Trigger: executes in both Content Script and Page World (with jQuery)
   function triggerClick(el) {
     if (!el) return;
     try { el.focus(); } catch (e) {}
@@ -79,7 +86,7 @@
     } catch (e) {}
   }
 
-  // Non-intrusive floating HUD in bottom-right corner
+  // Non-intrusive floating HUD in bottom-right corner with live countdown
   function updateHud(boughtCount = 0, limit = 100, isRunning = true) {
     if (!statusBanner) {
       statusBanner = document.createElement('div');
@@ -102,7 +109,7 @@
         flex-direction: column;
         gap: 5px;
         user-select: none;
-        max-width: 330px;
+        max-width: 340px;
         pointer-events: auto;
       `;
       document.body.appendChild(statusBanner);
@@ -110,15 +117,16 @@
 
     const dotColor = isRunning ? '#10b981' : '#f59e0b';
     const statusText = isRunning ? 'Auto-Buy ON' : 'Paused';
+    const refreshText = isRunning ? `${refreshCountdown}s` : 'Paused';
 
     if (isHudMinimized) {
       statusBanner.innerHTML = `
         <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; cursor:pointer;" id="hud-expand-btn">
           <div style="display:flex; align-items:center; gap:6px;">
             <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${dotColor};box-shadow:0 0 8px ${dotColor};"></span>
-            <span style="font-weight:600;color:#fff;font-size:12px;">Bliss AI: ${boughtCount}/${limit}</span>
+            <span style="font-weight:600;color:#fff;font-size:12px;">Bliss AI: ${boughtCount}/${limit} (⟳ ${refreshText})</span>
           </div>
-          <span style="color:#94a3b8;font-size:11px;background:#1e293b;padding:1px 6px;border-radius:3px;">+ Expand</span>
+          <span style="color:#94a3b8;font-size:11px;background:#1e293b;padding:1px 6px;border-radius:3px;">+</span>
         </div>
       `;
       const expandBtn = statusBanner.querySelector('#hud-expand-btn');
@@ -144,8 +152,9 @@
         </div>
       </div>
       <div style="font-size:11px;color:#94a3b8;display:flex;justify-content:space-between;gap:8px;border-top:1px solid #1e293b;padding-top:4px;">
-        <span>Leads on Screen: <strong style="color:#e2e8f0;">${detectedCardsCount}</strong></span>
-        <span id="hud-rescan-btn" style="color:#38bdf8;text-decoration:underline;cursor:pointer;">Re-scan</span>
+        <span>On Screen: <strong style="color:#e2e8f0;">${detectedCardsCount}</strong></span>
+        <span>Auto-Refresh: <strong style="color:#38bdf8;font-weight:600;">${refreshText}</strong></span>
+        <span id="hud-rescan-btn" style="color:#10b981;text-decoration:underline;cursor:pointer;">Refresh Now</span>
       </div>
       <div style="font-size:11px;color:#cbd5e1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${lastActionMsg}">
         ${lastActionMsg}
@@ -165,7 +174,7 @@
     if (rescanBtn) {
       rescanBtn.onclick = (e) => {
         e.stopPropagation();
-        scanPage(true);
+        window.location.reload();
       };
     }
   }
@@ -308,6 +317,7 @@
 
   // Fully Autonomous Modal Confirmation & Auto-Send Message Handler
   function handleAutonomousPurchase(card, button, productName, onVerified) {
+    isPurchasingActive = true;
     let attempts = 0;
     const maxAttempts = 36; // 36 x 250ms = 9 seconds
     let confirmedSuccess = false;
@@ -318,6 +328,7 @@
       attempts++;
       if (attempts > maxAttempts || confirmedSuccess) {
         clearInterval(timer);
+        isPurchasingActive = false;
         if (!confirmedSuccess) {
           const openModals = document.querySelectorAll('.modal, .popup, .dialog, div[class*="popup"], div[class*="modal"]');
           for (const m of openModals) {
@@ -344,6 +355,7 @@
       if (hasContactRevealed && !confirmedSuccess) {
         console.log('[Bliss Auto-Buyer] Verified: Lead purchase confirmed on card DOM! Phone:', phoneMatch ? phoneMatch[0] : 'Revealed');
         confirmedSuccess = true;
+        isPurchasingActive = false;
         clearInterval(timer);
         clearAnyPageBlurAndUnlock();
         onVerified({ phone: phoneMatch ? phoneMatch[0].trim() : null });
@@ -365,6 +377,7 @@
         if (modalText.includes('quotation sent') || modalText.includes('successfully contacted') || modalText.includes('contact details') || modalText.includes('lead consumed')) {
           console.log('[Bliss Auto-Buyer] Verified: Success message detected inside modal dialog!');
           confirmedSuccess = true;
+          isPurchasingActive = false;
           clearInterval(timer);
 
           setTimeout(() => {
@@ -580,4 +593,36 @@
 
   // Initial scan on load
   setTimeout(() => scanPage(false), 1500);
+
+  // Autonomous 12 to 15 Seconds Page Auto-Refresh Engine
+  setInterval(() => {
+    chrome.storage.local.get(['autoBuyEnabled', 'autoRefreshEnabled', 'boughtCount', 'dailyLimit'], (cfg) => {
+      const isRunning = cfg.autoBuyEnabled !== false;
+      const isRefreshOn = cfg.autoRefreshEnabled !== false;
+
+      if (!isRunning || !isRefreshOn) {
+        return;
+      }
+
+      // Check if purchase is in progress or a modal is currently open
+      const hasActiveModal = document.querySelector(
+        '#cb_modal, #cont_buyer_popup, #contact_buyer_popup, .modal.show, div[class*="cb_"]'
+      );
+      if (isPurchasingActive || hasActiveModal) {
+        refreshCountdown = 8; // Postpone refresh until purchase finishes
+        return;
+      }
+
+      refreshCountdown--;
+
+      updateHud(cfg.boughtCount || 0, cfg.dailyLimit || 100, isRunning);
+
+      if (refreshCountdown <= 0) {
+        console.log('[Bliss Auto-Buyer] 12-15s timer elapsed. Auto-refreshing BuyLeads page to fetch latest leads...');
+        refreshCountdown = getRandomInterval();
+        window.location.reload();
+      }
+    });
+  }, 1000);
+
 })();
