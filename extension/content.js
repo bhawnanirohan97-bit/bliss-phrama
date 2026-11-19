@@ -516,8 +516,12 @@
       const containers = Array.from(document.querySelectorAll(
         '#cb_modal, #cont_buyer_popup, #contact_buyer_popup, #gl_contact_buyer, #bld_modal, .modal, .popup, .dialog, .ui-dialog, div[class*="cb_"], div[id*="cb_"], div[class*="popup"], div[class*="modal"], .bld_modal'
       )).filter(el => {
-        const style = window.getComputedStyle(el);
-        return style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0';
+        try {
+          const style = window.getComputedStyle(el);
+          return style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0';
+        } catch (e) {
+          return false;
+        }
       });
 
       for (const container of targets(containers)) {
@@ -544,39 +548,59 @@
         const radios = Array.from(container.querySelectorAll('input[type="radio"], .cb_prod_list li, .prod_list li, [class*="prod_item"]'));
         if (radios.length > 0) {
           const first = radios[0];
-          if (first.tagName === 'INPUT' && !radios.some(r => r.checked)) {
-            first.checked = true;
-            first.dispatchEvent(new Event('change', { bubbles: true }));
-          }
-          triggerClick(first);
+          try {
+            if (first.tagName === 'INPUT' && !radios.some(r => r.checked)) {
+              first.checked = true;
+              first.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+            triggerClick(first);
+          } catch (e) {}
         }
 
         // B. Auto-select dropdown if present
         const selects = Array.from(container.querySelectorAll('select'));
         for (const sel of selects) {
-          if (sel.options.length > 1 && sel.selectedIndex <= 0) {
-            sel.selectedIndex = 1;
-            sel.dispatchEvent(new Event('change', { bubbles: true }));
-          }
+          try {
+            if (sel.options.length > 1 && sel.selectedIndex <= 0) {
+              sel.selectedIndex = 1;
+              sel.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+          } catch (e) {}
         }
 
         // C. Look for Message Textarea and fill export proposal if empty
         const textareas = Array.from(container.querySelectorAll('textarea, input[type="text"][name*="msg"], input[type="text"][placeholder*="message"]'))
-          .filter(t => t.offsetParent !== null);
+          .filter(t => {
+            try {
+              return Boolean(t && (t.offsetParent !== null || t.offsetWidth > 0 || t.offsetHeight > 0));
+            } catch (e) {
+              return false;
+            }
+          });
 
         for (const ta of textareas) {
-          if (!ta.value || ta.value.trim().length < 5) {
-            const med = productName || 'your pharmaceutical requirement';
-            fillInput(ta, `Dear Buyer, Thank you for your inquiry for ${med}. We at Bliss Pharmex (India) are certified exporters of finished pharmaceutical formulations (Tablets, Capsules, Injections). We can supply this requirement with WHO-GMP certification, COA, export packaging, and prompt shipping. Please share your required quantity and destination port.`);
-          }
+          try {
+            if (!ta.value || ta.value.trim().length < 5) {
+              const med = productName || 'your pharmaceutical requirement';
+              fillInput(ta, `Dear Buyer, Thank you for your inquiry for ${med}. We at Bliss Pharmex (India) are certified exporters of finished pharmaceutical formulations (Tablets, Capsules, Injections). We can supply this requirement with WHO-GMP certification, COA, export packaging, and prompt shipping. Please share your required quantity and destination port.`);
+            }
+          } catch (e) {}
         }
 
         // D. Auto-check any "Send Quotation" / "Share Contact" checkboxes
         const checkboxes = Array.from(container.querySelectorAll('input[type="checkbox"]'))
-          .filter(cb => cb.offsetParent !== null && !cb.checked);
+          .filter(cb => {
+            try {
+              return Boolean(cb && !cb.checked && (cb.offsetParent !== null || cb.offsetWidth > 0 || cb.offsetHeight > 0));
+            } catch (e) {
+              return false;
+            }
+          });
         for (const cb of checkboxes) {
-          cb.checked = true;
-          cb.dispatchEvent(new Event('change', { bubbles: true }));
+          try {
+            cb.checked = true;
+            cb.dispatchEvent(new Event('change', { bubbles: true }));
+          } catch (e) {}
         }
 
         // E. Auto-click Confirm / Submit / Contact Now buttons
