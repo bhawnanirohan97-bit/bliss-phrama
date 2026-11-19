@@ -97,7 +97,7 @@
   }
 
   // Execute instant purchase API call
-  function snipeLeadImmediately(lead, index, source = 'PRE_RENDER') {
+  function snipeLeadImmediately(lead, index, source = 'PRE_RENDER', targetId = null) {
     const ofrid = String(lead.ETO_OFR_ID || '');
     if (!ofrid || alreadyBoughtOffers.has(ofrid)) return;
     alreadyBoughtOffers.add(ofrid);
@@ -106,6 +106,9 @@
     const evalResult = evaluateLeadInMemory(lead, rules);
     if (!evalResult.eligible) {
       console.log(`[Bliss Sniper ⚡] Lead skipped: "${lead.ETO_OFR_TITLE}" [${lead.FK_GL_COUNTRY_ISO}] -> ${evalResult.reason}`);
+      if (targetId) {
+        window.postMessage({ type: 'BLISS_API_BUY_FAILED', targetId, reason: evalResult.reason }, '*');
+      }
       return;
     }
 
@@ -118,15 +121,20 @@
     const mcatId = lead.FK_GLCAT_MCAT_ID || lead.PRIME_MCAT_ID || '';
     const gridParams = lead.GRID_PARAMETERS || '37#1 1#0#A#0';
 
+    const isRecentPage = window.location.href.includes('pref=recent');
+    const landingPage = isRecentPage ? 'Recent' : 'Export';
+    const tsearch_text = isRecentPage ? 'recent_buy_leads' : 'export_leads_relevant_DLB';
+    const bl_page_location = isRecentPage ? 'page=recent#city=#mcatid=#locpref=3' : 'page=relevant#city=#mcatid=#locpref=3';
+
     const payload = {
       glusrId: String(glusrId),
       ofrid: ofrid,
       purchasemod: 'WEB',
       count: 2,
-      tsearch_text: 'export_leads_relevant_DLB',
+      tsearch_text: tsearch_text,
       serial: index + 1,
       responseTextArea: 0,
-      bl_page_location: 'page=relevant#city=#mcatid=#locpref=3',
+      bl_page_location: bl_page_location,
       matched_mcat_id: String(mcatId),
       order_value_flag: '',
       is_bulk_order: '',
@@ -140,7 +148,7 @@
       search_mcat_priority_level: '',
       searchTracking: '',
       NIClick: 2,
-      landingPage: 'Export'
+      landingPage: landingPage
     };
 
     fetch('/blreact/contactBuyNow', {
@@ -157,7 +165,7 @@
       console.log('[Bliss Sniper ⚡] Purchase Response:', result);
       if (result && (result.Status === 'Success' || result.Flag === '1' || result.pur_id)) {
         const buyer = (result.Data && result.Data[0]) ? result.Data[0] : {};
-        window.postMessage({
+        const successData = {
           type: 'BLISS_SNIPER_SUCCESS',
           ofrid,
           pur_id: result.pur_id,
@@ -171,13 +179,35 @@
             country: buyer.GLUSR_COUNTRY || '',
             countryIso: buyer.FK_GL_COUNTRY_ISO || ''
           }
-        }, '*');
+        };
+
+        window.postMessage(successData, '*');
+
+        if (targetId) {
+          window.postMessage({
+            type: 'BLISS_API_BUY_SUCCESS',
+            targetId,
+            ofrid,
+            pur_id: result.pur_id,
+            buyer: successData.buyer
+          }, '*');
+        }
       } else {
         console.warn('[Bliss Sniper ⚡] Purchase response unhandled status:', result);
+        if (targetId) {
+          window.postMessage({
+            type: 'BLISS_API_BUY_FAILED',
+            targetId,
+            reason: result?.Status || 'API purchase unsuccessful'
+          }, '*');
+        }
       }
     })
     .catch(err => {
       console.error('[Bliss Sniper ⚡] Pre-render purchase failed:', err);
+      if (targetId) {
+        window.postMessage({ type: 'BLISS_API_BUY_FAILED', targetId, reason: err.message }, '*');
+      }
     });
   }
 
@@ -250,7 +280,7 @@
         }) || (cardIndex !== undefined ? list[cardIndex] : null);
       }
       if (offerItem) {
-        snipeLeadImmediately(offerItem, cardIndex || 0, 'FALLBACK_TRIGGER');
+        snipeLeadImmediately(offerItem, cardIndex || 0, 'FALLBACK_TRIGGER', targetId);
       } else {
         window.postMessage({ type: 'BLISS_API_BUY_FAILED', targetId, reason: 'Offer ID not found' }, '*');
       }

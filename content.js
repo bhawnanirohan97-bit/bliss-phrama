@@ -573,9 +573,13 @@
         for (let i = 0; i < textareas.length; i++) {
           const ta = textareas[i];
           try {
-            if (ta && (!ta.value || ta.value.trim().length < 5)) {
-              const med = productName || 'your pharmaceutical requirement';
-              fillInput(ta, `Dear Buyer, Thank you for your inquiry for ${med}. We at Bliss Pharmex (India) are certified exporters of finished pharmaceutical formulations (Tablets, Capsules, Injections). We can supply this requirement with WHO-GMP certification, COA, export packaging, and prompt shipping. Please share your required quantity and destination port.`);
+            if (ta) {
+              const raw = typeof ta.value === 'string' ? ta.value : (ta.getAttribute && ta.getAttribute('value')) || '';
+              const val = String(raw || '').trim();
+              if (val.length < 5) {
+                const med = productName || 'your pharmaceutical requirement';
+                fillInput(ta, `Dear Buyer, Thank you for your inquiry for ${med}. We at Bliss Pharmex (India) are certified exporters of finished pharmaceutical formulations (Tablets, Capsules, Injections). We can supply this requirement with WHO-GMP certification, COA, export packaging, and prompt shipping. Please share your required quantity and destination port.`);
+              }
             }
           } catch (e) {}
         }
