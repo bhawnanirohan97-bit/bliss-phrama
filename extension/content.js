@@ -464,35 +464,28 @@
     };
   }
 
-  // Fully Autonomous Modal Confirmation & Auto-Send Message Handler
+  // Autonomous Modal & DOM Purchase Confirmation Handler
   function handleAutonomousPurchase(card, button, productName, onVerified) {
     isPurchasingActive = true;
     let attempts = 0;
-    const maxAttempts = 36; // 36 x 250ms = 9 seconds
+    const maxAttempts = 24; // 24 x 350ms = 8.4 seconds
     let confirmedSuccess = false;
 
-    console.log('[Bliss Auto-Buyer] Monitoring DOM for modal confirmation and purchase completion...');
+    console.log('[Bliss Auto-Buyer] Monitoring purchase completion...');
 
     const timer = setInterval(() => {
       attempts++;
       if (attempts > maxAttempts || confirmedSuccess) {
         clearInterval(timer);
         isPurchasingActive = false;
-        if (!confirmedSuccess) {
-          const openModals = document.querySelectorAll('.modal, .popup, .dialog, div[class*="popup"], div[class*="modal"]');
-          for (const m of openModals) {
-            const closeBtn = m.querySelector('button.close, .close, [class*="close"], [title*="Close"]');
-            if (closeBtn) triggerClick(closeBtn);
-          }
-          clearAnyPageBlurAndUnlock();
-        }
+        clearAnyPageBlurAndUnlock();
         return;
       }
 
-      // 1. Dispatch page-level autonomous modal submit via Injected Main World
+      // 1. Dispatch Main World click helper if needed
       window.postMessage({ type: 'BLISS_PAGE_SUBMIT_MODAL' }, '*');
 
-      // 2. Check: Did the button change or did actual phone/contact details appear?
+      // 2. Check if lead was marked contacted or phone revealed on card
       const btnRawTxt = (button.innerText || button.value || '').trim().toLowerCase();
       const cardText = (card.innerText || '').trim();
       const phoneMatch = cardText.match(/(?:\+?91[\s-]?)?[6-9]\d{9}|\+?[1-9]\d{1,3}[\s-]?\(?\d{2,4}\)?[\s-]?\d{3,5}[\s-]?\d{3,5}/);
@@ -503,7 +496,7 @@
                                 (card.querySelector('[class*="mobile"], [class*="phone"], [class*="contact_no"], [class*="bld_mob"]') && phoneMatch && phoneMatch[0].length >= 8);
 
       if (isContactRevealed && !confirmedSuccess) {
-        console.log('[Bliss Auto-Buyer] Verified: Lead purchase confirmed on card DOM! Phone:', phoneMatch ? phoneMatch[0] : 'Revealed');
+        console.log('[Bliss Auto-Buyer] Verified: Lead purchase confirmed on card DOM!');
         confirmedSuccess = true;
         isPurchasingActive = false;
         clearInterval(timer);
@@ -512,128 +505,31 @@
         return;
       }
 
-      // 3. Inspect active modals in Content Script
-      const containers = Array.from(document.querySelectorAll(
-        '#cb_modal, #cont_buyer_popup, #contact_buyer_popup, #gl_contact_buyer, #bld_modal, .modal, .popup, .dialog, .ui-dialog, div[class*="cb_"], div[id*="cb_"], div[class*="popup"], div[class*="modal"], .bld_modal'
-      )).filter(el => {
-        try {
-          const style = window.getComputedStyle(el);
-          return style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0';
-        } catch (e) {
-          return false;
-        }
-      });
-
-      for (const container of targets(containers)) {
-        const modalText = (container.innerText || '').toLowerCase();
-
-        // Check if modal displays success confirmation
+      // 3. Check if success dialog appeared
+      const modals = document.querySelectorAll('#cb_modal, #cont_buyer_popup, #contact_buyer_popup, .modal, .popup');
+      for (let i = 0; i < modals.length; i++) {
+        const modalText = (modals[i].innerText || '').toLowerCase();
         if (modalText.includes('quotation sent') || modalText.includes('successfully contacted') || modalText.includes('contact details') || modalText.includes('lead consumed')) {
           console.log('[Bliss Auto-Buyer] Verified: Success message detected inside modal dialog!');
           confirmedSuccess = true;
           isPurchasingActive = false;
           clearInterval(timer);
-
           setTimeout(() => {
-            const closeBtn = container.querySelector('button.close, .close, [class*="close"], [title*="Close"]');
+            const closeBtn = modals[i].querySelector('button.close, .close, [class*="close"], [title*="Close"]');
             if (closeBtn) triggerClick(closeBtn);
             clearAnyPageBlurAndUnlock();
           }, 800);
-
           onVerified({});
           return;
         }
 
-        // A. Auto-select product radio button / product option
-        const radios = Array.from(container.querySelectorAll('input[type="radio"], .cb_prod_list li, .prod_list li, [class*="prod_item"]'));
-        if (radios.length > 0) {
-          const first = radios[0];
-          try {
-            if (first.tagName === 'INPUT' && !radios.some(r => r.checked)) {
-              first.checked = true;
-              first.dispatchEvent(new Event('change', { bubbles: true }));
-            }
-            triggerClick(first);
-          } catch (e) {}
-        }
-
-        // B. Auto-select dropdown if present
-        const selects = Array.from(container.querySelectorAll('select'));
-        for (const sel of selects) {
-          try {
-            if (sel.options.length > 1 && sel.selectedIndex <= 0) {
-              sel.selectedIndex = 1;
-              sel.dispatchEvent(new Event('change', { bubbles: true }));
-            }
-          } catch (e) {}
-        }
-
-        // C. Look for Message Textarea and fill export proposal if empty
-        const textareas = container.querySelectorAll('textarea, input[type="text"][name*="msg"], input[type="text"][placeholder*="message"]');
-        for (let i = 0; i < textareas.length; i++) {
-          const ta = textareas[i];
-          try {
-            if (ta) {
-              const raw = typeof ta.value === 'string' ? ta.value : (ta.getAttribute && ta.getAttribute('value')) || '';
-              const val = String(raw || '').trim();
-              if (val.length < 5) {
-                const med = productName || 'your pharmaceutical requirement';
-                fillInput(ta, `Dear Buyer, Thank you for your inquiry for ${med}. We at Bliss Pharmex (India) are certified exporters of finished pharmaceutical formulations (Tablets, Capsules, Injections). We can supply this requirement with WHO-GMP certification, COA, export packaging, and prompt shipping. Please share your required quantity and destination port.`);
-              }
-            }
-          } catch (e) {}
-        }
-
-        // D. Auto-check any "Send Quotation" / "Share Contact" checkboxes
-        const checkboxes = container.querySelectorAll('input[type="checkbox"]');
-        for (let i = 0; i < checkboxes.length; i++) {
-          const cb = checkboxes[i];
-          try {
-            if (cb && !cb.checked) {
-              cb.checked = true;
-              cb.dispatchEvent(new Event('change', { bubbles: true }));
-            }
-          } catch (e) {}
-        }
-
-        // E. Auto-click Confirm / Submit / Contact Now buttons
-        const actionButtons = Array.from(container.querySelectorAll('button, a, input[type="button"], input[type="submit"], .btn, [role="button"]'))
-          .filter(b => {
-            try {
-              const rawTxt = (b.innerText || b.value || b.getAttribute('value') || b.getAttribute('title') || b.getAttribute('aria-label') || '');
-              const txt = (typeof rawTxt === 'string' ? rawTxt : String(rawTxt || '')).trim().toLowerCase();
-
-              const rawId = (b.getAttribute && b.getAttribute('id')) || (typeof b.id === 'string' ? b.id : '');
-              const idLower = String(rawId || '').toLowerCase();
-
-              const matchesText = (
-                txt === 'contact buyer now' ||
-                txt === 'contact now' ||
-                txt === 'submit' ||
-                txt === 'send' ||
-                txt === 'send quotation' ||
-                txt === 'send reply' ||
-                txt === 'proceed' ||
-                txt === 'ok' ||
-                txt === 'confirm' ||
-                txt === 'yes' ||
-                txt.includes('buy lead') ||
-                idLower.includes('submit') ||
-                idLower.includes('contact')
-              );
-
-              return Boolean(matchesText && !txt.includes('cancel') && !txt.includes('close'));
-            } catch (e) {
-              return false;
-            }
-          });
-
-        for (const btn of actionButtons) {
-          triggerClick(btn);
-          break;
+        // Click confirm/submit button inside modal once
+        const submitBtn = modals[i].querySelector('#btn_contact_now, #btn_submit, #cb_submit, input[value*="Contact"], input[value*="Submit"], button[type="submit"], .btn_submit, .cb_btn');
+        if (submitBtn) {
+          try { submitBtn.click(); } catch (e) {}
         }
       }
-    }, 250);
+    }, 350);
   }
 
   function targets(containers) {
