@@ -348,7 +348,7 @@
 
     const candidateButtons = allClickables.filter(el => {
       try {
-        if (el.offsetParent === null && window.getComputedStyle(el).display === 'none') return false;
+        if (el.checkVisibility ? !el.checkVisibility() : (el.offsetWidth === 0 && el.offsetHeight === 0)) return false;
 
         // Strictly ignore navigation, header, footer, and filter sidebar buttons
         if (el.closest('#left_col, #filter_panel, .filter_section, .sidebar, #header, header, footer, #footer, nav, .nav, [class*="sidebar"], [class*="filter"]')) {
@@ -569,18 +569,11 @@
         }
 
         // C. Look for Message Textarea and fill export proposal if empty
-        const textareas = Array.from(container.querySelectorAll('textarea, input[type="text"][name*="msg"], input[type="text"][placeholder*="message"]'))
-          .filter(t => {
-            try {
-              return Boolean(t && (t.offsetParent !== null || t.offsetWidth > 0 || t.offsetHeight > 0));
-            } catch (e) {
-              return false;
-            }
-          });
-
-        for (const ta of textareas) {
+        const textareas = container.querySelectorAll('textarea, input[type="text"][name*="msg"], input[type="text"][placeholder*="message"]');
+        for (let i = 0; i < textareas.length; i++) {
+          const ta = textareas[i];
           try {
-            if (!ta.value || ta.value.trim().length < 5) {
+            if (ta && (!ta.value || ta.value.trim().length < 5)) {
               const med = productName || 'your pharmaceutical requirement';
               fillInput(ta, `Dear Buyer, Thank you for your inquiry for ${med}. We at Bliss Pharmex (India) are certified exporters of finished pharmaceutical formulations (Tablets, Capsules, Injections). We can supply this requirement with WHO-GMP certification, COA, export packaging, and prompt shipping. Please share your required quantity and destination port.`);
             }
@@ -588,18 +581,14 @@
         }
 
         // D. Auto-check any "Send Quotation" / "Share Contact" checkboxes
-        const checkboxes = Array.from(container.querySelectorAll('input[type="checkbox"]'))
-          .filter(cb => {
-            try {
-              return Boolean(cb && !cb.checked && (cb.offsetParent !== null || cb.offsetWidth > 0 || cb.offsetHeight > 0));
-            } catch (e) {
-              return false;
-            }
-          });
-        for (const cb of checkboxes) {
+        const checkboxes = container.querySelectorAll('input[type="checkbox"]');
+        for (let i = 0; i < checkboxes.length; i++) {
+          const cb = checkboxes[i];
           try {
-            cb.checked = true;
-            cb.dispatchEvent(new Event('change', { bubbles: true }));
+            if (cb && !cb.checked) {
+              cb.checked = true;
+              cb.dispatchEvent(new Event('change', { bubbles: true }));
+            }
           } catch (e) {}
         }
 
