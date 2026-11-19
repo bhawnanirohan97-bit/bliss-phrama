@@ -15,6 +15,30 @@
   let lastActionMsg = 'Scanning for matching export leads...';
   let isPurchasingActive = false;
 
+  const pendingApiPurchases = new Map();
+
+  window.addEventListener('message', (event) => {
+    if (!event.data || typeof event.data !== 'object') return;
+
+    if (event.data.type === 'BLISS_API_BUY_SUCCESS') {
+      const { targetId, ofrid, pur_id, buyer } = event.data;
+      const callback = pendingApiPurchases.get(targetId);
+      if (callback) {
+        pendingApiPurchases.delete(targetId);
+        callback(true, { ofrid, pur_id, buyer });
+      }
+    }
+
+    if (event.data.type === 'BLISS_API_BUY_FAILED') {
+      const { targetId, reason } = event.data;
+      const callback = pendingApiPurchases.get(targetId);
+      if (callback) {
+        pendingApiPurchases.delete(targetId);
+        callback(false, { reason });
+      }
+    }
+  });
+
   // Auto-refresh interval randomized between 12 and 15 seconds
   function getRandomInterval() {
     return Math.floor(Math.random() * (15 - 12 + 1)) + 12;
@@ -562,48 +586,96 @@
             if (buyingInProgressCards.has(card)) return;
             buyingInProgressCards.add(card);
 
-            badge.innerText = `⏳ MATCHED (${countryBadge} | ${prodBadge}) — Buying...`;
+            badge.innerText = `⏳ MATCHED (${countryBadge} | ${prodBadge}) — Buying via API...`;
             badge.style.background = '#064e3b';
             badge.style.color = '#34d399';
             badge.style.border = '1px solid #059669';
 
-            lastActionMsg = `Buying: ${response.matchedProduct} (${response.matchedCountry})`;
+            lastActionMsg = `Buying via API: ${response.matchedProduct} (${response.matchedCountry})`;
             updateHud(boughtCount, dailyLimit, isRunning);
 
-            console.log('[Bliss Auto-Buyer] Matched lead approved by AI. Clicking Contact Buyer Now button:', button);
-            triggerClick(button);
+            const targetId = 'bliss_buy_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+            button.setAttribute('data-bliss-target', targetId);
 
-            handleAutonomousPurchase(card, button, response.matchedProduct || leadData.product_name, (verifiedData) => {
-              const enrichedData = {
-                ...leadData,
-                matchedProduct: response.matchedProduct,
-                matchedCountry: response.matchedCountry,
-                phone: verifiedData.phone || leadData.phone || null
-              };
+            let handled = false;
 
-              chrome.runtime.sendMessage({ action: 'LEAD_BOUGHT', leadData: enrichedData }, (boughtRes) => {
-                chrome.storage.local.get(['boughtCount', 'dailyLimit'], (cfg) => {
-                  updateHud(cfg.boughtCount, cfg.dailyLimit, true);
+            const onApiDone = (success, result) => {
+              if (handled) return;
+              handled = true;
+
+              if (success) {
+                console.log('[Bliss Auto-Buyer] Direct API purchase SUCCEEDED!', result);
+                badge.innerText = `✅ BOUGHT VIA API (${countryBadge} | ${prodBadge})`;
+                badge.style.background = '#047857';
+                badge.style.color = '#ffffff';
+
+                button.innerText = 'Contacted (Auto-Bought)';
+                button.style.background = '#065f46';
+                button.style.borderColor = '#047857';
+                button.disabled = true;
+
+                const enrichedData = {
+                  ...leadData,
+                  matchedProduct: response.matchedProduct,
+                  matchedCountry: response.matchedCountry,
+                  phone: result.buyer?.mobile ? (result.buyer.mobileCountry ? `+${result.buyer.mobileCountry} ${result.buyer.mobile}` : result.buyer.mobile) : (leadData.phone || null),
+                  buyer_name: result.buyer?.name || null,
+                  country: result.buyer?.country || response.matchedCountry || leadData.country,
+                  external_id: result.pur_id ? String(result.pur_id) : (result.ofrid ? String(result.ofrid) : null)
+                };
+
+                chrome.runtime.sendMessage({ action: 'LEAD_BOUGHT', leadData: enrichedData }, (boughtRes) => {
+                  chrome.storage.local.get(['boughtCount', 'dailyLimit'], (cfg) => {
+                    updateHud(cfg.boughtCount, cfg.dailyLimit, true);
+                  });
                 });
-              });
 
-              badge.innerText = `✅ BOUGHT (${countryBadge} | ${prodBadge})`;
-              badge.style.background = '#047857';
-              badge.style.color = '#ffffff';
-              lastActionMsg = `Successfully bought: ${response.matchedProduct}`;
-            });
+                lastActionMsg = `Successfully bought via API: ${response.matchedProduct}`;
+                updateHud(boughtCount, dailyLimit, isRunning);
+              } else {
+                console.warn('[Bliss Auto-Buyer] Direct API purchase fallback to UI click:', result?.reason);
+                badge.innerText = `⏳ Fallback: Clicking UI button...`;
+                triggerClick(button);
 
-            setTimeout(() => {
-              if (badge.innerText.includes('Buying...')) {
-                badge.innerText = `⚠️ MATCHED (${countryBadge}) — Needs click`;
-                badge.style.background = '#78350f';
-                badge.style.color = '#fde68a';
-                badge.style.border = '1px solid #d97706';
-                lastActionMsg = `Awaiting confirmation for: ${response.matchedProduct}`;
-                clearAnyPageBlurAndUnlock();
+                handleAutonomousPurchase(card, button, response.matchedProduct || leadData.product_name, (verifiedData) => {
+                  const enrichedData = {
+                    ...leadData,
+                    matchedProduct: response.matchedProduct,
+                    matchedCountry: response.matchedCountry,
+                    phone: verifiedData.phone || leadData.phone || null
+                  };
+
+                  chrome.runtime.sendMessage({ action: 'LEAD_BOUGHT', leadData: enrichedData }, (boughtRes) => {
+                    chrome.storage.local.get(['boughtCount', 'dailyLimit'], (cfg) => {
+                      updateHud(cfg.boughtCount, cfg.dailyLimit, true);
+                    });
+                  });
+
+                  badge.innerText = `✅ BOUGHT (${countryBadge} | ${prodBadge})`;
+                  badge.style.background = '#047857';
+                  badge.style.color = '#ffffff';
+                  lastActionMsg = `Successfully bought: ${response.matchedProduct}`;
+                });
               }
-            }, 9500);
+            };
 
+            pendingApiPurchases.set(targetId, onApiDone);
+
+            // 1. Dispatch Direct API Buy
+            window.postMessage({
+              type: 'BLISS_API_BUY_LEAD',
+              targetId,
+              leadTitle: response.matchedProduct || leadData.product_name,
+              cardIndex: candidates.indexOf(item)
+            }, '*');
+
+            // 2. Safety Timeout: If API does not respond in 3.5s, fall back to UI Click
+            setTimeout(() => {
+              if (!handled) {
+                console.warn('[Bliss Auto-Buyer] API buy timeout (3.5s). Triggering UI click fallback.');
+                onApiDone(false, { reason: 'Timeout' });
+              }
+            }, 3500);
           } else {
             badge.innerText = `⛔ SKIPPED — ${response.reason}`;
             badge.style.background = '#1e293b';
