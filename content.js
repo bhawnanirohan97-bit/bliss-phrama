@@ -181,17 +181,27 @@
 
   // Traverses up to reliably locate the entire card container
   function findCardElement(btn) {
+    if (btn.closest('#left_col, #filter_panel, .filter_section, .sidebar, #header, header, footer, #footer, nav, .nav, [class*="sidebar"], [class*="filter"]')) {
+      return null;
+    }
+
     const directMatch = btn.closest(
       '.bl_card, .bld_card, .blp_card, .glp_card, .listing-card, .listing-item, [id*="bl_"], [id*="lead"], [class*="bld_"], [class*="lead"], li.card, li'
     );
     if (directMatch && directMatch !== document.body && directMatch !== document.documentElement) {
+      if (directMatch.closest('#left_col, #filter_panel, .filter_section, .sidebar, [class*="sidebar"], [class*="filter"]')) {
+        return null;
+      }
       return directMatch;
     }
 
     let current = btn.parentElement;
     let fallback = null;
     while (current && current !== document.body && current !== document.documentElement) {
-      const hasTitle = current.querySelector('h1, h2, h3, h4, [class*="pname"], [class*="title"], [class*="prod"], [class*="desc"]');
+      if (current.closest && current.closest('#left_col, #filter_panel, .filter_section, .sidebar, [class*="sidebar"], [class*="filter"]')) {
+        return null;
+      }
+      const hasTitle = current.querySelector('h1, h2, h3, h4, .bld_pname, .prod_name, [class*="pname"], [class*="title"], [class*="prod_heading"]');
       const text = (current.innerText || '').trim();
       if (hasTitle && text.length > 40) {
         fallback = current;
@@ -216,12 +226,17 @@
       try {
         if (el.offsetParent === null && window.getComputedStyle(el).display === 'none') return false;
 
+        // Strictly ignore navigation, header, footer, and filter sidebar buttons
+        if (el.closest('#left_col, #filter_panel, .filter_section, .sidebar, #header, header, footer, #footer, nav, .nav, [class*="sidebar"], [class*="filter"]')) {
+          return false;
+        }
+
         const rawTxt = (el.innerText || el.value || el.getAttribute('title') || el.getAttribute('aria-label') || '');
         const text = (typeof rawTxt === 'string' ? rawTxt : String(rawTxt || '')).trim().toLowerCase();
         if (text.length > 70 || text.length < 2) return false;
 
         // Skip already bought / revealed buttons
-        if (text.includes('view contact') || text.includes('buyer details') || text.includes('already contacted') || text.includes('contacted')) {
+        if (text.includes('view contact') || text.includes('already contacted') || text.includes('contacted') || text.includes('quotation sent')) {
           return false;
         }
 
@@ -232,9 +247,7 @@
           text.includes('buy lead') ||
           text.includes('connect now') ||
           text.includes('reply now') ||
-          text.includes('send reply') ||
-          text === 'contact' ||
-          text === 'reply'
+          text.includes('send reply')
         );
       } catch (e) {
         return false;
@@ -245,7 +258,14 @@
     candidateButtons.forEach(btn => {
       const card = findCardElement(btn);
       if (card) {
-        results.push({ card, button: btn });
+        const leadData = extractLeadData(card);
+        // Only accept if card has a genuine medicine/product title
+        if (leadData.product_name && leadData.product_name.length >= 3) {
+          const lower = leadData.product_name.toLowerCase();
+          if (lower !== 'location' && lower !== 'suggested countries' && !lower.includes('filter')) {
+            results.push({ card, button: btn, leadData });
+          }
+        }
       }
     });
 
@@ -348,16 +368,17 @@
       // 1. Dispatch page-level autonomous modal submit via Injected Main World
       window.postMessage({ type: 'BLISS_PAGE_SUBMIT_MODAL' }, '*');
 
-      // 2. Check: Did the card change to show buyer contact details or phone number?
+      // 2. Check: Did the button change or did actual phone/contact details appear?
+      const btnRawTxt = (button.innerText || button.value || '').trim().toLowerCase();
       const cardText = (card.innerText || '').trim();
       const phoneMatch = cardText.match(/(?:\+?91[\s-]?)?[6-9]\d{9}|\+?[1-9]\d{1,3}[\s-]?\(?\d{2,4}\)?[\s-]?\d{3,5}[\s-]?\d{3,5}/);
-      const hasContactRevealed = cardText.toLowerCase().includes('buyer details') ||
-                                cardText.toLowerCase().includes('contact details') ||
-                                cardText.toLowerCase().includes('quotation sent') ||
-                                cardText.toLowerCase().includes('already contacted') ||
-                                (phoneMatch && phoneMatch[0].length >= 8);
+      const isContactRevealed = btnRawTxt.includes('view contact') ||
+                                btnRawTxt.includes('contacted') ||
+                                btnRawTxt.includes('quotation sent') ||
+                                !card.contains(button) ||
+                                (card.querySelector('[class*="mobile"], [class*="phone"], [class*="contact_no"], [class*="bld_mob"]') && phoneMatch && phoneMatch[0].length >= 8);
 
-      if (hasContactRevealed && !confirmedSuccess) {
+      if (isContactRevealed && !confirmedSuccess) {
         console.log('[Bliss Auto-Buyer] Verified: Lead purchase confirmed on card DOM! Phone:', phoneMatch ? phoneMatch[0] : 'Revealed');
         confirmedSuccess = true;
         isPurchasingActive = false;
