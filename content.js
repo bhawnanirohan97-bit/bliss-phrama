@@ -15,6 +15,59 @@
   let lastActionMsg = 'Scanning for matching export leads...';
   let isPurchasingActive = false;
 
+  // Defensive Chrome Extension API Wrappers (prevents "Extension context invalidated" & undefined errors)
+  function isExtensionValid() {
+    try {
+      return Boolean(typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.id && chrome.storage && chrome.storage.local);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function safeStorageGet(keys, callback) {
+    if (!isExtensionValid()) {
+      if (callback) callback({ autoBuyEnabled: true, autoRefreshEnabled: true, boughtCount: 0, dailyLimit: 100 });
+      return;
+    }
+    try {
+      chrome.storage.local.get(keys, (res) => {
+        try {
+          if (chrome.runtime?.lastError || !res) {
+            if (callback) callback({ autoBuyEnabled: true, autoRefreshEnabled: true, boughtCount: 0, dailyLimit: 100 });
+          } else {
+            if (callback) callback(res);
+          }
+        } catch (e) {
+          if (callback) callback({ autoBuyEnabled: true, autoRefreshEnabled: true, boughtCount: 0, dailyLimit: 100 });
+        }
+      });
+    } catch (e) {
+      if (callback) callback({ autoBuyEnabled: true, autoRefreshEnabled: true, boughtCount: 0, dailyLimit: 100 });
+    }
+  }
+
+  function safeSendMessage(msg, callback) {
+    if (!isExtensionValid()) {
+      if (callback) callback(null);
+      return;
+    }
+    try {
+      chrome.runtime.sendMessage(msg, (res) => {
+        try {
+          if (chrome.runtime?.lastError) {
+            if (callback) callback(null);
+          } else {
+            if (callback) callback(res);
+          }
+        } catch (e) {
+          if (callback) callback(null);
+        }
+      });
+    } catch (e) {
+      if (callback) callback(null);
+    }
+  }
+
   const pendingApiPurchases = new Map();
   const snipedLeadsMap = new Map();
 
@@ -57,9 +110,10 @@
         external_id: String(pur_id || ofrid)
       };
 
-      chrome.runtime.sendMessage({ action: 'LEAD_BOUGHT', leadData: enrichedData }, (boughtRes) => {
-        chrome.storage.local.get(['boughtCount', 'dailyLimit'], (cfg) => {
-          updateHud(cfg.boughtCount, cfg.dailyLimit, true);
+      safeSendMessage({ action: 'LEAD_BOUGHT', leadData: enrichedData }, (boughtRes) => {
+        safeStorageGet(['boughtCount', 'dailyLimit'], (cfg) => {
+          const c = cfg || {};
+          updateHud(c.boughtCount || 0, c.dailyLimit || 100, true);
         });
       });
 
@@ -573,10 +627,11 @@
   async function scanPage(forceRescan = false) {
     clearAnyPageBlurAndUnlock();
 
-    chrome.storage.local.get(['autoBuyEnabled', 'boughtCount', 'dailyLimit'], async (config) => {
-      const isRunning = config.autoBuyEnabled !== false;
-      const boughtCount = config.boughtCount || 0;
-      const dailyLimit = config.dailyLimit || 100;
+    safeStorageGet(['autoBuyEnabled', 'boughtCount', 'dailyLimit'], async (config) => {
+      const cfg = config || {};
+      const isRunning = cfg.autoBuyEnabled !== false;
+      const boughtCount = cfg.boughtCount || 0;
+      const dailyLimit = cfg.dailyLimit || 100;
 
       updateHud(boughtCount, dailyLimit, isRunning);
 
@@ -628,7 +683,7 @@
         badge.style.color = '#94a3b8';
         badge.style.border = '1px solid #334155';
 
-        chrome.runtime.sendMessage({ action: 'EVALUATE_LEAD', leadData }, async (response) => {
+        safeSendMessage({ action: 'EVALUATE_LEAD', leadData }, async (response) => {
           if (!response) {
             badge.innerText = '⚠️ Cannot connect to server';
             badge.style.background = '#450a0a';
@@ -684,9 +739,10 @@
                   external_id: result.pur_id ? String(result.pur_id) : (result.ofrid ? String(result.ofrid) : null)
                 };
 
-                chrome.runtime.sendMessage({ action: 'LEAD_BOUGHT', leadData: enrichedData }, (boughtRes) => {
-                  chrome.storage.local.get(['boughtCount', 'dailyLimit'], (cfg) => {
-                    updateHud(cfg.boughtCount, cfg.dailyLimit, true);
+                safeSendMessage({ action: 'LEAD_BOUGHT', leadData: enrichedData }, (boughtRes) => {
+                  safeStorageGet(['boughtCount', 'dailyLimit'], (cfg) => {
+                    const c = cfg || {};
+                    updateHud(c.boughtCount || 0, c.dailyLimit || 100, true);
                   });
                 });
 
@@ -705,9 +761,10 @@
                     phone: verifiedData.phone || leadData.phone || null
                   };
 
-                  chrome.runtime.sendMessage({ action: 'LEAD_BOUGHT', leadData: enrichedData }, (boughtRes) => {
-                    chrome.storage.local.get(['boughtCount', 'dailyLimit'], (cfg) => {
-                      updateHud(cfg.boughtCount, cfg.dailyLimit, true);
+                  safeSendMessage({ action: 'LEAD_BOUGHT', leadData: enrichedData }, (boughtRes) => {
+                    safeStorageGet(['boughtCount', 'dailyLimit'], (cfg) => {
+                      const c = cfg || {};
+                      updateHud(c.boughtCount || 0, c.dailyLimit || 100, true);
                     });
                   });
 
@@ -765,9 +822,10 @@
 
   // Autonomous 12 to 15 Seconds Page Auto-Refresh Engine
   setInterval(() => {
-    chrome.storage.local.get(['autoBuyEnabled', 'autoRefreshEnabled', 'boughtCount', 'dailyLimit'], (cfg) => {
-      const isRunning = cfg.autoBuyEnabled !== false;
-      const isRefreshOn = cfg.autoRefreshEnabled !== false;
+    safeStorageGet(['autoBuyEnabled', 'autoRefreshEnabled', 'boughtCount', 'dailyLimit'], (cfg) => {
+      const config = cfg || {};
+      const isRunning = config.autoBuyEnabled !== false;
+      const isRefreshOn = config.autoRefreshEnabled !== false;
 
       if (!isRunning || !isRefreshOn) {
         return;
@@ -784,7 +842,7 @@
 
       refreshCountdown--;
 
-      updateHud(cfg.boughtCount || 0, cfg.dailyLimit || 100, isRunning);
+      updateHud(config.boughtCount || 0, config.dailyLimit || 100, isRunning);
 
       if (refreshCountdown <= 0) {
         console.log('[Bliss Auto-Buyer] 12-15s timer elapsed. Auto-refreshing BuyLeads page to fetch latest leads...');
