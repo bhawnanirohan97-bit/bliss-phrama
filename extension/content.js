@@ -16,9 +16,55 @@
   let isPurchasingActive = false;
 
   const pendingApiPurchases = new Map();
+  const snipedLeadsMap = new Map();
+
+  // Synchronize rules from localhost:8000 into localStorage for 0ms in-memory sniper
+  function syncAiRulesCache() {
+    fetch('http://127.0.0.1:8000/api/ai-bot/settings')
+      .then(r => r.json())
+      .then(settings => {
+        if (settings) {
+          const rules = {
+            enabled: settings.enabled !== false,
+            reject_domestic: settings.reject_domestic !== false,
+            countries: settings.country_filters || ['US', 'GB', 'AU', 'PH', 'KR', 'JP', 'CN'],
+            products: settings.product_filters || []
+          };
+          localStorage.setItem('bliss_ai_rules', JSON.stringify(rules));
+          window.postMessage({ type: 'BLISS_UPDATE_RULES_CACHE', rules }, '*');
+          console.log('[Bliss Content] AI rules cache refreshed from server:', rules.products.length, 'products');
+        }
+      })
+      .catch(() => {});
+  }
+  syncAiRulesCache();
 
   window.addEventListener('message', (event) => {
     if (!event.data || typeof event.data !== 'object') return;
+
+    if (event.data.type === 'BLISS_SNIPER_SUCCESS') {
+      const { ofrid, pur_id, matchedProduct, matchedCountry, leadTitle, buyer } = event.data;
+      console.log('%c[Bliss Content] PRE-RENDER SNIPED LEAD RECEIVED:', 'color: #10b981; font-weight: bold;', matchedProduct, buyer);
+
+      snipedLeadsMap.set(ofrid, { pur_id, matchedProduct, matchedCountry, buyer, leadTitle });
+      if (leadTitle) snipedLeadsMap.set(leadTitle.toLowerCase().trim(), { pur_id, matchedProduct, matchedCountry, buyer });
+
+      const enrichedData = {
+        product_name: matchedProduct || leadTitle,
+        country: buyer.country || matchedCountry,
+        phone: buyer.mobile ? (buyer.mobileCountry ? `+${buyer.mobileCountry} ${buyer.mobile}` : buyer.mobile) : null,
+        buyer_name: buyer.name || null,
+        external_id: String(pur_id || ofrid)
+      };
+
+      chrome.runtime.sendMessage({ action: 'LEAD_BOUGHT', leadData: enrichedData }, (boughtRes) => {
+        chrome.storage.local.get(['boughtCount', 'dailyLimit'], (cfg) => {
+          updateHud(cfg.boughtCount, cfg.dailyLimit, true);
+        });
+      });
+
+      lastActionMsg = `⚡ Sniped Pre-Render: ${matchedProduct} (${matchedCountry})`;
+    }
 
     if (event.data.type === 'BLISS_API_BUY_SUCCESS') {
       const { targetId, ofrid, pur_id, buyer } = event.data;
@@ -549,6 +595,8 @@
         processedCards.add(card);
 
         const leadData = extractLeadData(card);
+        const cleanTitle = (leadData.product_name || '').toLowerCase().trim();
+        const snipedInfo = snipedLeadsMap.get(cleanTitle);
 
         // Slim, non-blocking inline badge above the button
         let badge = card.querySelector('.bliss-eval-badge');
@@ -561,6 +609,18 @@
           } else {
             card.prepend(badge);
           }
+        }
+
+        if (snipedInfo) {
+          badge.innerText = `⚡ SNIPED PRE-RENDER (${snipedInfo.matchedCountry})`;
+          badge.style.background = '#065f46';
+          badge.style.color = '#34d399';
+          badge.style.border = '1px solid #059669';
+          button.innerText = 'Contacted (Sniped)';
+          button.style.background = '#065f46';
+          button.style.borderColor = '#047857';
+          button.disabled = true;
+          continue;
         }
 
         badge.innerText = '🔍 Bliss: Checking...';

@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Bliss Pharmex - IndiaMART AI Lead Auto-Buyer",
-  "version": "2.0.0",
-  "description": "AI-powered auto-buyer for IndiaMART BuyLeads. Filters domestic Indian leads, checks target export countries, and auto-buys matching pharma leads.",
+  "version": "3.0.0",
+  "description": "Pre-Render Zero-Latency AI Sniper for IndiaMART BuyLeads. Buys leads before DOM renders with direct session API.",
   "permissions": [
     "storage",
     "activeTab"
